@@ -40,9 +40,9 @@
 
 #include <QtWidgets>
 
-#include "screenshot.hpp"
+#include "screenshot_gui.hpp"
 
-Screenshot::Screenshot() : screenshotLabel(new QLabel(this))
+ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     screenshotLabel->setAlignment(Qt::AlignCenter);
@@ -59,7 +59,7 @@ Screenshot::Screenshot() : screenshotLabel(new QLabel(this))
     delaySpinBox->setMaximum(60);
 
     typedef void (QSpinBox::*QSpinBoxIntSignal)(int);
-    connect(delaySpinBox, static_cast<QSpinBoxIntSignal>(&QSpinBox::valueChanged), this, &Screenshot::updateCheckBox);
+    connect(delaySpinBox, static_cast<QSpinBoxIntSignal>(&QSpinBox::valueChanged), this, &ScreenshotGUI::updateCheckBox);
 
     hideThisWindowCheckBox = new QCheckBox(tr("Hide This Window"), optionsGroupBox);
 
@@ -67,19 +67,20 @@ Screenshot::Screenshot() : screenshotLabel(new QLabel(this))
     optionsGroupBoxLayout->addWidget(new QLabel(tr("Screenshot Delay:"), this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
     optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0, 1, 2);
-
     mainLayout->addWidget(optionsGroupBox);
 
     QHBoxLayout* buttonsLayout = new QHBoxLayout;
     newScreenshotButton = new QPushButton(tr("New Screenshot"), this);
-    connect(newScreenshotButton, &QPushButton::clicked, this, &Screenshot::newScreenshot);
-    buttonsLayout->addWidget(newScreenshotButton);
     QPushButton* saveScreenshotButton = new QPushButton(tr("Save Screenshot"), this);
-    connect(saveScreenshotButton, &QPushButton::clicked, this, &Screenshot::saveScreenshot);
-    buttonsLayout->addWidget(saveScreenshotButton);
     QPushButton* quitScreenshotButton = new QPushButton(tr("Quit"), this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
+
+    connect(newScreenshotButton, &QPushButton::clicked, this, &ScreenshotGUI::newScreenshot);
+    connect(saveScreenshotButton, &QPushButton::clicked, this, &ScreenshotGUI::saveScreenshot);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
+
+    buttonsLayout->addWidget(newScreenshotButton);
+    buttonsLayout->addWidget(saveScreenshotButton);
     buttonsLayout->addWidget(quitScreenshotButton);
     buttonsLayout->addStretch();
     mainLayout->addLayout(buttonsLayout);
@@ -91,7 +92,7 @@ Screenshot::Screenshot() : screenshotLabel(new QLabel(this))
     resize(300, 200);
 }
 
-void Screenshot::resizeEvent(QResizeEvent* /* event */)
+void ScreenshotGUI::resizeEvent(QResizeEvent* /* event */)
 {
     QSize scaledSize = originalPixmap.size();
     scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
@@ -100,16 +101,16 @@ void Screenshot::resizeEvent(QResizeEvent* /* event */)
         updateScreenshotLabel();
 }
 
-void Screenshot::newScreenshot()
+void ScreenshotGUI::newScreenshot()
 {
     if (hideThisWindowCheckBox->isChecked())
         hide();
     newScreenshotButton->setDisabled(true);
 
-    QTimer::singleShot(delaySpinBox->value() * 1000, this, &Screenshot::shootScreen);
+    QTimer::singleShot(delaySpinBox->value() * 1000, this, &ScreenshotGUI::shootScreen);
 }
 
-void Screenshot::saveScreenshot()
+void ScreenshotGUI::saveScreenshot()
 {
     const QString format = "png";
     QString initialPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
@@ -142,7 +143,7 @@ void Screenshot::saveScreenshot()
     }
 }
 
-void Screenshot::shootScreen()
+void ScreenshotGUI::shootScreen()
 {
     QScreen* screen = QGuiApplication::primaryScreen();
     if (const QWindow* window = windowHandle())
@@ -161,7 +162,7 @@ void Screenshot::shootScreen()
         show();
 }
 
-void Screenshot::updateCheckBox()
+void ScreenshotGUI::updateCheckBox()
 {
     if (delaySpinBox->value() == 0)
     {
@@ -174,7 +175,7 @@ void Screenshot::updateCheckBox()
     }
 }
 
-void Screenshot::updateScreenshotLabel()
+void ScreenshotGUI::updateScreenshotLabel()
 {
     screenshotLabel->setPixmap(
         originalPixmap.scaled(screenshotLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));

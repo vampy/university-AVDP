@@ -1,14 +1,14 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-#include "screenshot.hpp"
+#include "screenshot_gui.hpp"
 
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
-    Screenshot screenshot;
-    screenshot.move(QApplication::desktop()->availableGeometry(&screenshot).topLeft() + QPoint(20, 20));
+    ScreenshotGUI screenshot;
+//    QApplication::desktop()->grab()
     screenshot.show();
     return app.exec();
 }

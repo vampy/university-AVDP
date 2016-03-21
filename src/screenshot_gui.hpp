@@ -53,12 +53,12 @@ class QPushButton;
 class QSpinBox;
 class QVBoxLayout;
 
-class Screenshot : public QWidget
+class ScreenshotGUI : public QWidget
 {
     Q_OBJECT
 
 public:
-    Screenshot();
+    ScreenshotGUI();
 
 protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
