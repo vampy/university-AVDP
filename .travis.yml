@@ -1,0 +1,43 @@
+language: cpp
+sudo: true
+dist: trusty
+
+compiler:
+  - gcc
+
+os:
+  - linux
+
+matrix:
+  fast_finish: true
+
+env:
+  matrix:
+    - QT_BASE="54" BUILD_TYPE="debug"
+    - QT_BASE="54" BUILD_TYPE="release"
+    - QT_BASE="55" BUILD_TYPE="debug"
+    - QT_BASE="55" BUILD_TYPE="release"
+    - QT_BASE="56" BUILD_TYPE="debug"
+    - QT_BASE="56" BUILD_TYPE="release"
+
+# Minimum Qt version is 5.4 (https://launchpad.net/~beineri)
+before_install:
+  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt542-trusty; fi
+  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty; fi
+  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt56-trusty; fi
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get install -qq qt${QT_BASE}base qt${QT_BASE}script; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
+
+before_script:
+  - export THREADS=$((`nproc` + 1))
+  - echo "THREADS = $THREADS"
+  - free -mt
+  - qmake --version
+
+script:
+  - mkdir "build"
+  - cd "build"
+  - qmake -Wall ../pdav.pro CONFIG+=$BUILD_TYPE
+  - make VERBOSE=1 -j $THREADS
