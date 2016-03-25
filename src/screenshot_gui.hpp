@@ -38,12 +38,13 @@
 **
 ****************************************************************************/
 
-#ifndef SCREENSHOT_H
-#define SCREENSHOT_H
+#ifndef SCREENSHOTGUI_H
+#define SCREENSHOTGUI_H
 
-#include <QPixmap>
 #include <QWidget>
+#include "screenshot.hpp"
 
+class QPixMap;
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
@@ -64,20 +65,21 @@ protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
 
 private slots:
+    void newScreenshotClicked();
     void newScreenshot();
-    void saveScreenshot();
-    void shootScreen();
+    void saveScreenshotClicked();
     void updateCheckBox();
 
 private:
     void updateScreenshotLabel();
+    void updateGuiAfterScreenshot();
 
-    QPixmap originalPixmap;
-
+    // gui components
+    Screenshot* m_screenshot;
     QLabel* screenshotLabel;
     QSpinBox* delaySpinBox;
     QCheckBox* hideThisWindowCheckBox;
     QPushButton* newScreenshotButton;
 };
 
-#endif // SCREENSHOT_H
+#endif // SCREENSHOTGUI_H
