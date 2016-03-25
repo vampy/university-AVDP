@@ -1,15 +1,53 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
+#include "constants.hpp"
 #include "screenshot_gui.hpp"
-//#include "screenshot.hpp"
+#include "cli.hpp"
 
 int main(int argc, char* argv[])
 {
+    // Warmup app
     QApplication app(argc, argv);
+    QApplication::setApplicationDisplayName(Constants::app_name);
+    QApplication::setApplicationName(Constants::app_name);
+    QApplication::setApplicationVersion(Constants::version);
+
+    // Parse command line
+    QCommandLineParser parser;
+    parser.setApplicationDescription(Constants::description);
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // define arguments
+    Q_ASSERT(parser.addOptions({// Show the gui or command line
+        {{"g", "gui"}, "GUI mode"}
+    }));
+
+    // Process the actual command line arguments given by the user
+    parser.process(app);
 
     ScreenshotGUI screenshot;
+    CLI cli(parser);
+    if (parser.isSet("gui"))
+    {
+        // gui mode
+        qDebug("GUI mode");
+        screenshot.show();
+    }
+    else
+    {
+        // cli mode
+        qDebug("Console mode");
+
+        // quit app when finished signal  received
+        QObject::connect(&cli, &CLI::finished, &app, &QApplication::quit);
+
+        // launch cli
+        QTimer::singleShot(0, &cli, &CLI::run);
+    }
+
     //    QApplication::desktop()->grab()
-    screenshot.show();
+
     return app.exec();
 }
