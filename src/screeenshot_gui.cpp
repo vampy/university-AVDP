@@ -53,27 +53,27 @@ ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(screenshotLabel);
 
-    QGroupBox* optionsGroupBox = new QGroupBox(tr("Options"), this);
+    QGroupBox* optionsGroupBox = new QGroupBox("Options", this);
     delaySpinBox = new QSpinBox(optionsGroupBox);
-    delaySpinBox->setSuffix(tr(" s"));
+    delaySpinBox->setSuffix(" s");
     delaySpinBox->setMaximum(60);
 
     typedef void (QSpinBox::*QSpinBoxIntSignal)(int);
     connect(
         delaySpinBox, static_cast<QSpinBoxIntSignal>(&QSpinBox::valueChanged), this, &ScreenshotGUI::updateCheckBox);
 
-    hideThisWindowCheckBox = new QCheckBox(tr("Hide This Window"), optionsGroupBox);
+    hideThisWindowCheckBox = new QCheckBox("Hide This Window", optionsGroupBox);
 
     QGridLayout* optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
-    optionsGroupBoxLayout->addWidget(new QLabel(tr("Screenshot Delay:"), this), 0, 0);
+    optionsGroupBoxLayout->addWidget(new QLabel("Screenshot Delay:", this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
     optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0, 1, 2);
     mainLayout->addWidget(optionsGroupBox);
 
     QHBoxLayout* buttonsLayout = new QHBoxLayout;
-    newScreenshotButton = new QPushButton(tr("New Screenshot"), this);
-    QPushButton* saveScreenshotButton = new QPushButton(tr("Save Screenshot"), this);
-    QPushButton* quitScreenshotButton = new QPushButton(tr("Quit"), this);
+    newScreenshotButton = new QPushButton("New Screenshot", this);
+    QPushButton* saveScreenshotButton = new QPushButton("Save Screenshot", this);
+    QPushButton* quitScreenshotButton = new QPushButton("Quit", this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
 
     // init screenshot
@@ -95,7 +95,7 @@ ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
     m_screenshot->take();
 
     delaySpinBox->setValue(5);
-    setWindowTitle(tr("Screenshot"));
+    setWindowTitle("Screenshot");
     resize(300, 200);
 }
 
@@ -131,9 +131,9 @@ void ScreenshotGUI::saveScreenshotClicked()
     if (initialPath.isEmpty())
         initialPath = QDir::currentPath();
 
-    initialPath += tr("/untitled.") + format;
+    initialPath += "/untitled." + format;
 
-    QFileDialog fileDialog(this, tr("Save As"), initialPath);
+    QFileDialog fileDialog(this, "Save As", initialPath);
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     fileDialog.setFileMode(QFileDialog::AnyFile);
     fileDialog.setDirectory(initialPath);
@@ -152,8 +152,8 @@ void ScreenshotGUI::saveScreenshotClicked()
     const QString fileName = fileDialog.selectedFiles().first();
     if (!m_screenshot->getPixmap().save(fileName))
     {
-        QMessageBox::warning(this, tr("Save Error"),
-            tr("The image could not be saved to \"%1\".").arg(QDir::toNativeSeparators(fileName)));
+        QMessageBox::warning(this, "Save Error",
+            QString("The image could not be saved to \"%1\".").arg(QDir::toNativeSeparators(fileName)));
     }
 }
 

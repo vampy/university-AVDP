@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     {
         // gui mode
         qDebug("GUI mode");
-        gui = new ScreenshotGUI(&app);
+        gui = new ScreenshotGUI();
         gui->show();
     }
     else
