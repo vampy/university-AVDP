@@ -1,7 +1,7 @@
-# university-PDAV
-[![Build Status](https://travis-ci.org/leyyin/university-PDAV.svg?branch=master)](https://travis-ci.org/leyyin/university-PDAV)
+# university-AVDP
+[![Build Status](https://travis-ci.org/leyyin/university-AVDP.svg?branch=master)](https://travis-ci.org/leyyin/university-AVDP)
 
-Project for processing audio-video data http://www.cs.ubbcluj.ro/~forest/pdav/
+Project for audio-video data processing http://www.cs.ubbcluj.ro/~forest/pdav/
 
 # Build
 You need to have at least `Qt 5.4` installed and configured.
