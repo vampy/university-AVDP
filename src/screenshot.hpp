@@ -14,8 +14,6 @@ class Screenshot : public QObject
 public:
     Screenshot();
 
-    void save();
-
     // Take a screenshot
     void take(int msec);
     void take();

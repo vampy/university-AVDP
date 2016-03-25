@@ -42,7 +42,7 @@
 
 #include "gui.hpp"
 
-GUI::GUI() : screenshotLabel(new QLabel(this))
+GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot)
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     screenshotLabel->setAlignment(Qt::AlignCenter);
@@ -74,9 +74,6 @@ GUI::GUI() : screenshotLabel(new QLabel(this))
     QPushButton* saveScreenshotButton = new QPushButton("Save Screenshot", this);
     QPushButton* quitScreenshotButton = new QPushButton("Quit", this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
-
-    // init screenshot
-    m_screenshot = new Screenshot();
 
     connect(newScreenshotButton, &QPushButton::clicked, this, &GUI::newScreenshotClicked);
     connect(saveScreenshotButton, &QPushButton::clicked, this, &GUI::saveScreenshotClicked);

@@ -75,8 +75,8 @@ private:
     void updateGuiAfterScreenshot();
 
     // gui components
-    Screenshot* m_screenshot;
     QLabel* screenshotLabel;
+    Screenshot* m_screenshot;
     QSpinBox* delaySpinBox;
     QCheckBox* hideThisWindowCheckBox;
     QPushButton* newScreenshotButton;
