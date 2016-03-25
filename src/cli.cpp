@@ -1,6 +1,6 @@
 #include "cli.hpp"
 
-CLI::CLI(QCommandLineParser& parser) {}
+CLI::CLI(QObject* parent, QCommandLineParser& parser) : QObject(parent) {}
 
 void CLI::quit() { emit finished(); }
 
