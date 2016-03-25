@@ -2,7 +2,7 @@
 #include <QDesktopWidget>
 
 #include "constants.hpp"
-#include "screenshot_gui.hpp"
+#include "gui.hpp"
 #include "cli.hpp"
 
 int main(int argc, char* argv[])
@@ -26,13 +26,13 @@ int main(int argc, char* argv[])
     // Process the actual command line arguments given by the user
     parser.process(app);
 
-    ScreenshotGUI* gui;
+    GUI* gui;
     CLI* cli;
     if (parser.isSet("gui"))
     {
         // gui mode
         qDebug("GUI mode");
-        gui = new ScreenshotGUI();
+        gui = new GUI();
         gui->show();
     }
     else

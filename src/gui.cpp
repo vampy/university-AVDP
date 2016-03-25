@@ -40,9 +40,9 @@
 
 #include <QtWidgets>
 
-#include "screenshot_gui.hpp"
+#include "gui.hpp"
 
-ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
+GUI::GUI() : screenshotLabel(new QLabel(this))
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     screenshotLabel->setAlignment(Qt::AlignCenter);
@@ -59,8 +59,7 @@ ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
     delaySpinBox->setMaximum(60);
 
     typedef void (QSpinBox::*QSpinBoxIntSignal)(int);
-    connect(
-        delaySpinBox, static_cast<QSpinBoxIntSignal>(&QSpinBox::valueChanged), this, &ScreenshotGUI::updateCheckBox);
+    connect(delaySpinBox, static_cast<QSpinBoxIntSignal>(&QSpinBox::valueChanged), this, &GUI::updateCheckBox);
 
     hideThisWindowCheckBox = new QCheckBox("Hide This Window", optionsGroupBox);
 
@@ -79,12 +78,12 @@ ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
     // init screenshot
     m_screenshot = new Screenshot();
 
-    connect(newScreenshotButton, &QPushButton::clicked, this, &ScreenshotGUI::newScreenshotClicked);
-    connect(saveScreenshotButton, &QPushButton::clicked, this, &ScreenshotGUI::saveScreenshotClicked);
+    connect(newScreenshotButton, &QPushButton::clicked, this, &GUI::newScreenshotClicked);
+    connect(saveScreenshotButton, &QPushButton::clicked, this, &GUI::saveScreenshotClicked);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
 
     // new screenshot was taken signal
-    connect(m_screenshot, &Screenshot::onScreenshot, this, &ScreenshotGUI::newScreenshot);
+    connect(m_screenshot, &Screenshot::onScreenshot, this, &GUI::newScreenshot);
 
     buttonsLayout->addWidget(newScreenshotButton);
     buttonsLayout->addWidget(saveScreenshotButton);
@@ -99,7 +98,7 @@ ScreenshotGUI::ScreenshotGUI() : screenshotLabel(new QLabel(this))
     resize(300, 200);
 }
 
-void ScreenshotGUI::resizeEvent(QResizeEvent* /* event */)
+void GUI::resizeEvent(QResizeEvent* /* event */)
 {
     QSize scaledSize = m_screenshot->getPixmap().size();
     scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
@@ -108,7 +107,7 @@ void ScreenshotGUI::resizeEvent(QResizeEvent* /* event */)
         updateScreenshotLabel();
 }
 
-void ScreenshotGUI::newScreenshotClicked()
+void GUI::newScreenshotClicked()
 {
     if (hideThisWindowCheckBox->isChecked())
         hide();
@@ -118,13 +117,13 @@ void ScreenshotGUI::newScreenshotClicked()
     m_screenshot->take(delaySpinBox->value() * 1000);
 }
 
-void ScreenshotGUI::newScreenshot()
+void GUI::newScreenshot()
 {
     qDebug() << "Screenshot taken";
     updateGuiAfterScreenshot();
 }
 
-void ScreenshotGUI::saveScreenshotClicked()
+void GUI::saveScreenshotClicked()
 {
     const QString format = "png";
     QString initialPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
@@ -157,7 +156,7 @@ void ScreenshotGUI::saveScreenshotClicked()
     }
 }
 
-void ScreenshotGUI::updateCheckBox()
+void GUI::updateCheckBox()
 {
     if (delaySpinBox->value() == 0)
     {
@@ -170,7 +169,7 @@ void ScreenshotGUI::updateCheckBox()
     }
 }
 
-void ScreenshotGUI::updateScreenshotLabel()
+void GUI::updateScreenshotLabel()
 {
     auto pixmap = m_screenshot->getPixmap();
     // scale to the label
@@ -178,7 +177,7 @@ void ScreenshotGUI::updateScreenshotLabel()
 }
 
 // Update all the componensts afte a screenshot was taken
-void ScreenshotGUI::updateGuiAfterScreenshot()
+void GUI::updateGuiAfterScreenshot()
 {
     updateScreenshotLabel();
 
