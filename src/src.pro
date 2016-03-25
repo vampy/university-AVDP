@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = pdav
+TARGET = avdp
 QT += widgets
 
 HEADERS = *.hpp

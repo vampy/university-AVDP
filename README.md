@@ -7,7 +7,7 @@ Project for audio-video data processing http://www.cs.ubbcluj.ro/~forest/pdav/
 You need to have at least `Qt 5.4` installed and configured.
 
 ## Qt Creator
-1. Open the [pdav.pro](pdav.pro) file with Qt Creator.
+1. Open the [avdp.pro](avdp.pro) file with Qt Creator.
 2. You can specify the type of build targets if you click on `Details`.
 3. Create a new `build` directory.
 4. For `Debug` and `Release` build use the new created `build` directory.
@@ -17,6 +17,6 @@ You need to have at least `Qt 5.4` installed and configured.
 
 ## Terminal with qmake
 1. Create a build directory `mkdir build` and `cd build`.
-2. Run qmake `qmake -Wall ../pdav.pro CONFIG+=debug` for debug builds or `qmake -Wall ../pdav.pro CONFIG+=release` for release builds.
+2. Run qmake `qmake -Wall ../avdp.pro CONFIG+=debug` for debug builds or `qmake -Wall ../avdp.pro CONFIG+=release` for release builds.
 3. Compile with `make -j $(nproc)` (bash shell) or `make -j (nproc)` (fish shell).
-4. The executable will be in `./src/pdav`.
+4. The executable will be in `./src/avdp`.

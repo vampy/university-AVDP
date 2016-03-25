@@ -39,5 +39,5 @@ before_script:
 script:
   - mkdir "build"
   - cd "build"
-  - qmake -Wall ../pdav.pro CONFIG+=$BUILD_TYPE
+  - qmake -Wall ../avdp.pro CONFIG+=$BUILD_TYPE
   - make VERBOSE=1 -j $THREADS
