@@ -40,15 +40,17 @@ void CLI::takeScreenshot()
 {
     m_screenshot->take();
     Q_ASSERT(
-        m_screenshot->getPixmap().save(QString("%1/%2.jpg").arg(m_dir_screenshots).arg(m_counter, 5, 10, QChar('0'))));
+        m_screenshot->getImage().save(QString("%1/%2.jpg").arg(m_dir_screenshots).arg(m_counter, 5, 10, QChar('0'))));
     m_counter++;
 
     // after run, convert to video
     // ffmpeg -i "%05d.jpg" -c:v libx264 -r 25 -pix_fmt yuv420p out.mp4
-    if (m_counter == 101)
+    if (m_counter == 100)
     {
         qDebug() << "Elapsed time (seconds): " << m_elapsed->elapsed() / 1000.0;
         m_timer->stop();
+//        qDebug() <<"ScreenShotSize:"<< m_screenshot->getImage().size();
         quit();
+
     }
 }

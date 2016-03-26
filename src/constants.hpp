@@ -5,7 +5,7 @@ namespace Constants
 {
 static const char app_name[] = "Video Streamer";
 static const char version[] = "0.1";
-static const char description[] = "Video stremer for forest";
+static const char description[] = "Video streamer for forest";
 }
 
 #endif // CONSTANTS_H

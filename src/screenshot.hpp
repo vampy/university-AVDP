@@ -7,6 +7,7 @@
 #include <QScreen>
 #include <QDebug>
 #include <QGuiApplication>
+#include "imageblock.hpp"
 
 class Screenshot : public QObject
 {
@@ -21,11 +22,18 @@ public:
     QPixmap getPixmap() const;
     void setPixmap(const QPixmap& pixmap);
 
+    QImage getImage() const;
+    void setImage(const QImage &image);
+
+
 signals:
     void onScreenshot();
 
 private:
     QPixmap m_pixmap;
+    QImage m_image;
+    int m_blockWidth = 16;
+    QQueue<QImage>* m_queue;
 };
 
 #endif // SCREENSHOT_H

@@ -74,12 +74,14 @@ private:
     void updateScreenshotLabel();
     void updateGuiAfterScreenshot();
 
+    QQueue<QImage>* m_queue;
     // gui components
     QLabel* screenshotLabel;
     Screenshot* m_screenshot;
     QSpinBox* delaySpinBox;
     QCheckBox* hideThisWindowCheckBox;
     QPushButton* newScreenshotButton;
+    QPushButton* startRecordingButton;
 };
 
 #endif // SCREENSHOTGUI_H
