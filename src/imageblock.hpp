@@ -5,11 +5,11 @@
 #include <QDebug>
 #include <QImage>
 
-class Imageblock  : public QObject
+class Imageblock : public QObject
 {
     Q_OBJECT
 public:
-    Imageblock(int frameId,QPoint position, QImage image);
+    Imageblock(int frameId, QPoint position, QImage image);
     bool isEqualTo(const Imageblock& other);
     QImage getImage() const;
 

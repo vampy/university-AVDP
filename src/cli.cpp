@@ -46,8 +46,7 @@ void CLI::takeScreenshot()
     {
         qDebug() << "Elapsed time (seconds): " << m_elapsed.elapsed() / 1000.0;
         m_timer->stop();
-//        qDebug() <<"ScreenShotSize:"<< m_screenshot->getImage().size();
+        //        qDebug() <<"ScreenShotSize:"<< m_screenshot->getImage().size();
         quit();
-
     }
 }

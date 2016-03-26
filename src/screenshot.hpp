@@ -23,8 +23,7 @@ public:
     void setPixmap(const QPixmap& pixmap);
 
     QImage getImage() const;
-    void setImage(const QImage &image);
-
+    void setImage(const QImage& image);
 
 signals:
     void onScreenshot();

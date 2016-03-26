@@ -7,12 +7,11 @@
 #include "screenshot.hpp"
 #include "imageblock.hpp"
 
-
 class Recorder : public QObject
 {
     Q_OBJECT
 public:
-    explicit Recorder(QObject *parent = 0,int fps=25);
+    explicit Recorder(QObject* parent = 0, int fps = 25);
     QImage getCurrentFrame();
 
 signals:
@@ -25,6 +24,7 @@ public slots:
 private slots:
     void takeScreenshot();
     void compareFrames();
+
 private:
     QQueue<QImage>* m_queue;
     Screenshot* m_screenshot;
@@ -34,7 +34,6 @@ private:
     int m_currentFrameId = 0;
     int m_blockWidth = 16;
     int m_fps;
-
 };
 
 #endif // RECORDER_H

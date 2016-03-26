@@ -46,7 +46,6 @@
 #include "screenshot.hpp"
 #include "recorder.hpp"
 
-
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
@@ -78,12 +77,11 @@ private slots:
 
 private:
     void updateGuiAfterNewFrame();
-    //this one actually updates the screenshot label
+    // this one actually updates the screenshot label
     void updateFrameLabel();
 
     void updateScreenshotLabel();
     void updateGuiAfterScreenshot();
-
 
     Recorder* m_recorder;
     // gui components
@@ -93,7 +91,7 @@ private:
     QCheckBox* hideThisWindowCheckBox;
     QPushButton* newScreenshotButton;
     QPushButton* startRecordingButton;
-    //TODO make GUI hide while recording and stop with a shortcut
+    // TODO make GUI hide while recording and stop with a shortcut
     QPushButton* stopRecordingButton;
 };
 
