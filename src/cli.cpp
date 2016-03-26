@@ -11,8 +11,6 @@ CLI::CLI(QObject* parent, QCommandLineParser& parser)
 
 void CLI::quit()
 {
-    delete m_elapsed;
-    m_elapsed = nullptr;
     delete m_screenshot;
     m_screenshot = nullptr;
     emit finished();
@@ -22,7 +20,7 @@ void CLI::run()
 {
     qDebug("CLI::run");
 
-    // create screenshots dir if exists, otherwise remove it and create an empty one
+    // remove the screenshots dir if it does not exist
     QDir dir(m_dir_screenshots);
     if (dir.exists())
     {
@@ -31,9 +29,8 @@ void CLI::run()
     Q_ASSERT(dir.cdUp()); // go up from the screenshots dir
     Q_ASSERT(dir.mkdir(m_dir_screenshots));
 
-    m_elapsed = new QTime();
     m_timer->start();
-    m_elapsed->start();
+    m_elapsed.start();
 }
 
 void CLI::takeScreenshot()
@@ -47,7 +44,7 @@ void CLI::takeScreenshot()
     // ffmpeg -i "%05d.jpg" -c:v libx264 -r 25 -pix_fmt yuv420p out.mp4
     if (m_counter == 100)
     {
-        qDebug() << "Elapsed time (seconds): " << m_elapsed->elapsed() / 1000.0;
+        qDebug() << "Elapsed time (seconds): " << m_elapsed.elapsed() / 1000.0;
         m_timer->stop();
 //        qDebug() <<"ScreenShotSize:"<< m_screenshot->getImage().size();
         quit();

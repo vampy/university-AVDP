@@ -33,7 +33,7 @@ private:
     const QString m_dir_screenshots = "screenshots";
     quint64 m_counter = 0;
     QTimer* m_timer;
-    QTime* m_elapsed;
+    QTime m_elapsed;
 };
 
 #endif // CLI_H
