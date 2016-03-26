@@ -42,9 +42,11 @@
 #define SCREENSHOTGUI_H
 
 #include <QWidget>
+#include <QPixmap>
 #include "screenshot.hpp"
+#include "recorder.hpp"
 
-class QPixMap;
+
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
@@ -70,11 +72,20 @@ private slots:
     void saveScreenshotClicked();
     void updateCheckBox();
 
+    void startRecordingClicked();
+    void stopRecordingClicked();
+    void newFrame();
+
 private:
+    void updateGuiAfterNewFrame();
+    //this one actually updates the screenshot label
+    void updateFrameLabel();
+
     void updateScreenshotLabel();
     void updateGuiAfterScreenshot();
 
-    QQueue<QImage>* m_queue;
+
+    Recorder* m_recorder;
     // gui components
     QLabel* screenshotLabel;
     Screenshot* m_screenshot;
@@ -82,6 +93,8 @@ private:
     QCheckBox* hideThisWindowCheckBox;
     QPushButton* newScreenshotButton;
     QPushButton* startRecordingButton;
+    //TODO make GUI hide while recording and stop with a shortcut
+    QPushButton* stopRecordingButton;
 };
 
 #endif // SCREENSHOTGUI_H

@@ -42,7 +42,7 @@
 
 #include "gui.hpp"
 
-GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot)
+GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot),m_recorder(new Recorder(this,25))
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     screenshotLabel->setAlignment(Qt::AlignCenter);
@@ -71,24 +71,30 @@ GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot)
 
     QHBoxLayout* buttonsLayout = new QHBoxLayout;
     newScreenshotButton = new QPushButton("New Screenshot", this);
+    startRecordingButton = new QPushButton("Start Recording",this);
+    stopRecordingButton = new QPushButton("Stop Recording",this);
     QPushButton* saveScreenshotButton = new QPushButton("Save Screenshot", this);
     QPushButton* quitScreenshotButton = new QPushButton("Quit", this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
 
     connect(newScreenshotButton, &QPushButton::clicked, this, &GUI::newScreenshotClicked);
+    connect(startRecordingButton, &QPushButton::clicked, this, &GUI::startRecordingClicked);
+    connect(stopRecordingButton, &QPushButton::clicked, this, &GUI::stopRecordingClicked);
     connect(saveScreenshotButton, &QPushButton::clicked, this, &GUI::saveScreenshotClicked);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
 
     // new screenshot was taken signal
     connect(m_screenshot, &Screenshot::onScreenshot, this, &GUI::newScreenshot);
-
+    connect(m_recorder, &Recorder::onFrameReady,this,&GUI::newFrame);
     buttonsLayout->addWidget(newScreenshotButton);
+    buttonsLayout->addWidget(startRecordingButton);
+    buttonsLayout->addWidget(stopRecordingButton);
     buttonsLayout->addWidget(saveScreenshotButton);
     buttonsLayout->addWidget(quitScreenshotButton);
     buttonsLayout->addStretch();
     mainLayout->addLayout(buttonsLayout);
 
-    m_screenshot->take();
+//    m_screenshot->take();
 
     delaySpinBox->setValue(5);
     setWindowTitle("Screenshot");
@@ -164,6 +170,32 @@ void GUI::updateCheckBox()
     {
         hideThisWindowCheckBox->setDisabled(false);
     }
+}
+
+void GUI::startRecordingClicked()
+{
+    m_recorder->startRecording();
+}
+
+void GUI::stopRecordingClicked()
+{
+    m_recorder->stopRecording();
+}
+
+void GUI::newFrame()
+{
+    updateGuiAfterNewFrame();
+}
+
+void GUI::updateGuiAfterNewFrame()
+{
+    updateFrameLabel();
+}
+
+void GUI::updateFrameLabel()
+{
+   auto image = m_recorder->getCurrentFrame();
+   screenshotLabel->setPixmap(QPixmap::fromImage(image).scaled(screenshotLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 void GUI::updateScreenshotLabel()
