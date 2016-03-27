@@ -12,7 +12,7 @@ bool Imageblock::isEqualTo(const Imageblock& other)
     {
         for (int x = 0; x < m_image.width(); x++)
         {
-            mse += pow(util::yComponent(m_image.pixel(x,y))-util::yComponent(other.getImage().pixel(x,y)),2.0);
+            mse += pow(util::yComponent(m_image.pixel(x, y)) - util::yComponent(other.getImage().pixel(x, y)), 2.0);
         }
     }
     mse = mse / (double)(m_image.width() * m_image.width());

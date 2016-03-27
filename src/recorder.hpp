@@ -31,8 +31,8 @@ private:
     Screenshot* m_screenshot;
     QTimer* m_timer;
     QTimer* m_workerTimer;
-    QImage m_currentFrame; //used to display
-    QImage m_auxCurrentFrame; //used internally to compare with the next frame
+    QImage m_currentFrame; // used to display
+    QImage m_auxCurrentFrame; // used internally to compare with the next frame
     int m_currentFrameId = 0;
     int m_fps;
 };

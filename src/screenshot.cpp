@@ -50,7 +50,7 @@ void Screenshot::take()
         // will happen if the width or height is not a multiple of 16
         m_image = m_image.copy(0, 0, new_size.width(), new_size.height());
 
-//        qDebug() << "Screenshot: copy image" << t.elapsed() << "ms";
+        //        qDebug() << "Screenshot: copy image" << t.elapsed() << "ms";
     }
     // TODO remove and use only QImage
     m_pixmap = QPixmap::fromImage(m_image);

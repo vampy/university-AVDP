@@ -43,7 +43,7 @@ void Recorder::compareFrames()
     if (m_currentFrame.isNull())
     {
         m_currentFrame = m_queue->dequeue();
-        m_auxCurrentFrame = m_currentFrame.copy(0,0,m_currentFrame.width(),m_currentFrame.height());
+        m_auxCurrentFrame = m_currentFrame.copy(0, 0, m_currentFrame.width(), m_currentFrame.height());
     }
     else
     {
@@ -60,26 +60,26 @@ void Recorder::compareFrames()
                 if (nextImageBlock.isEqualTo(currentImageBlock))
                 {
                     counter++;
-//                    for (int j = 0; j < Constants::block_width; j++)
-//                    {
-//                        for (int i = 0; i < Constants::block_width; i++)
-//                        {
-//                            m_currentFrame.setPixel(x + i, y + j, qRgb(255, 0, 0));
-//                        }
-//                    }
-                }else{
-                    //copy the blocks that are not equal from nextFrame to m_currentFrame.
+                    //                    for (int j = 0; j < Constants::block_width; j++)
+                    //                    {
+                    //                        for (int i = 0; i < Constants::block_width; i++)
+                    //                        {
+                    //                            m_currentFrame.setPixel(x + i, y + j, qRgb(255, 0, 0));
+                    //                        }
+                    //                    }
+                }
+                else
+                {
+                    // copy the blocks that are not equal from nextFrame to m_currentFrame.
                     for (int j = 0; j < Constants::block_width; j++)
                     {
                         for (int i = 0; i < Constants::block_width; i++)
                         {
-                            m_auxCurrentFrame.setPixel(x + i, y + j,nextFrame.pixel(x+i,y+j));
-                            m_currentFrame.setPixel(x + i, y + j,nextFrame.pixel(x+i,y+j));
+                            m_auxCurrentFrame.setPixel(x + i, y + j, nextFrame.pixel(x + i, y + j));
+                            m_currentFrame.setPixel(x + i, y + j, nextFrame.pixel(x + i, y + j));
                         }
                     }
-
                 }
-
             }
         }
         m_currentFrameId++;
@@ -90,8 +90,6 @@ void Recorder::compareFrames()
                      << (m_currentFrame.width() / Constants::block_width)
                     * (m_currentFrame.height() / Constants::block_width)
                      << "equal blocks in frame" << m_currentFrameId;
-
-
         }
     }
 }
