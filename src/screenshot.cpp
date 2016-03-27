@@ -1,5 +1,5 @@
 #include "screenshot.hpp"
-
+#include <QTime>
 Screenshot::Screenshot() {}
 
 void Screenshot::take(int msec)
@@ -12,34 +12,49 @@ void Screenshot::take(int msec)
 
 void Screenshot::take()
 {
-    // TODO: select screen, see
+    // TODO: select screen from cli and GUI
     // https://stackoverflow.com/questions/29988952/how-can-i-take-a-print-screen-using-qt-c-with-various-monitors
-    QScreen* screen = QGuiApplication::primaryScreen();
+    QScreen* screen;
+    auto screens = QGuiApplication::screens();
+
+    if (screens.size() > 1)
+    {
+        // grab first screen
+        screen = screens[0];
+    }
+    else
+    {
+        screen = QGuiApplication::primaryScreen();
+    }
+
     if (!screen)
     {
         qDebug() << "Screenshot::shootScreen could not get screen";
         return;
     }
-    m_image = screen->grabWindow(0).toImage();
-    QSize newSize = QSize(ceil(m_image.width() / (double)m_blockWidth) * m_blockWidth,
-        ceil(m_image.height() / (double)m_blockWidth) * m_blockWidth);
-    if (m_image.size() != newSize)
+
+    m_image = screen->grabWindow(0, screen->geometry().x(), screen->geometry().y(), screen->geometry().width(),
+                          screen->geometry().height()).toImage();
+    Q_ASSERT(!m_image.isNull());
+
+    // round up so that it is a multiple of block_width
+    auto new_size = QSize(util::roundUp(m_image.width(), Constants::block_width),
+        util::roundUp(m_image.height(), Constants::block_width));
+
+    if (m_image.size() != new_size)
     {
-        // copy image pixel by pixel
-        // the new image is pixel padded at right and bottom if needed.
-        QImage newImage = QImage(newSize, m_image.format());
-        for (int j = 0; j < newSize.height(); j++)
-        {
-            for (int i = 0; i < newSize.width(); i++)
-            {
-                newImage.setPixel(i, j, m_image.pixel(i < m_image.width() ? i : m_image.width() - 1,
-                                            j < m_image.height() ? j : m_image.height() - 1));
-            }
-        }
-        m_image = newImage;
+        QTime t;
+        t.start();
+
+        // black pixels will be inserted if the crop is bigger than the actual image, which
+        // will happen if the width or height is not a multiple of 16
+        m_image = m_image.copy(0, 0, new_size.width(), new_size.height());
+
+        qDebug() << "Screenshot: copy image" << t.elapsed() << "ms";
     }
     // TODO remove and use only QImage
     m_pixmap = QPixmap::fromImage(m_image);
+    Q_ASSERT(!m_pixmap.isNull());
     emit onScreenshot();
 }
 

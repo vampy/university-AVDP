@@ -6,6 +6,7 @@
 #include <QDebug>
 #include "screenshot.hpp"
 #include "imageblock.hpp"
+#include "constants.hpp"
 
 class Recorder : public QObject
 {
@@ -32,7 +33,6 @@ private:
     QTimer* m_workerTimer;
     QImage m_currentFrame;
     int m_currentFrameId = 0;
-    int m_blockWidth = 16;
     int m_fps;
 };
 

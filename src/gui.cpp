@@ -94,8 +94,6 @@ GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot), m_
     buttonsLayout->addStretch();
     mainLayout->addLayout(buttonsLayout);
 
-    //    m_screenshot->take();
-
     delaySpinBox->setValue(5);
     setWindowTitle("Screenshot");
     resize(300, 200);

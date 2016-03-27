@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QGuiApplication>
 #include "imageblock.hpp"
+#include "constants.hpp"
+#include "util.hpp"
 
 class Screenshot : public QObject
 {
@@ -31,7 +33,7 @@ signals:
 private:
     QPixmap m_pixmap;
     QImage m_image;
-    int m_blockWidth = 16;
+
     QQueue<QImage>* m_queue;
 };
 

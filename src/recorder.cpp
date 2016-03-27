@@ -37,39 +37,40 @@ void Recorder::takeScreenshot()
 
 void Recorder::compareFrames()
 {
-    if (!m_queue->empty())
+    if (m_queue->empty())
+        return;
+
+    if (m_currentFrame.isNull())
     {
-        if (m_currentFrame.isNull())
+        m_currentFrame = m_queue->dequeue();
+    }
+    else
+    {
+        int counter = 0;
+        QImage nextFrame = m_queue->dequeue();
+        for (int y = 0; y < nextFrame.height(); y += Constants::block_width)
         {
-            m_currentFrame = m_queue->dequeue();
-        }
-        else
-        {
-            int counter = 0;
-            QImage nextFrame = m_queue->dequeue();
-            for (int y = 0; y < nextFrame.height(); y += m_blockWidth)
+            for (int x = 0; x < nextFrame.width(); x += Constants::block_width)
             {
-                for (int x = 0; x < nextFrame.width(); x += m_blockWidth)
+                Imageblock currentImageBlock(m_currentFrameId, QPoint(x, y),
+                    m_currentFrame.copy(x, y, Constants::block_width, Constants::block_width));
+                Imageblock nextImageBlock(m_currentFrameId + 1, QPoint(x, y),
+                    nextFrame.copy(x, y, Constants::block_width, Constants::block_width));
+                if (nextImageBlock.isEqualTo(currentImageBlock))
                 {
-                    Imageblock currentImageBlock(
-                        m_currentFrameId, QPoint(x, y), m_currentFrame.copy(x, y, m_blockWidth, m_blockWidth));
-                    Imageblock nextImageBlock(
-                        m_currentFrameId + 1, QPoint(x, y), nextFrame.copy(x, y, m_blockWidth, m_blockWidth));
-                    if (nextImageBlock.isEqualTo(currentImageBlock))
-                    {
-                        counter++;
-                    }
+                    counter++;
                 }
             }
-            m_currentFrameId++;
-            m_currentFrame = nextFrame;
-            emit onFrameReady();
-            if (m_currentFrameId % 25 == 0)
-            {
-                qDebug() << "We have " << counter << "/"
-                         << (m_currentFrame.width() / m_blockWidth) * (m_currentFrame.height() / m_blockWidth)
-                         << "equal blocks in frame" << m_currentFrameId;
-            }
+        }
+        m_currentFrameId++;
+        m_currentFrame = nextFrame;
+        emit onFrameReady();
+        if (m_currentFrameId % 25 == 0)
+        {
+            qDebug() << "We have " << counter << "/"
+                     << (m_currentFrame.width() / Constants::block_width)
+                    * (m_currentFrame.height() / Constants::block_width)
+                     << "equal blocks in frame" << m_currentFrameId;
         }
     }
 }
