@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QImage>
+#include "util.hpp"
 
 class Imageblock : public QObject
 {

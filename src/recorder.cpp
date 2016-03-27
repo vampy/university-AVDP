@@ -59,6 +59,13 @@ void Recorder::compareFrames()
                 if (nextImageBlock.isEqualTo(currentImageBlock))
                 {
                     counter++;
+                    for (int j = 0; j < Constants::block_width; j++)
+                    {
+                        for (int i = 0; i < Constants::block_width; i++)
+                        {
+                            nextFrame.setPixel(x + i, y + j, qRgb(255, 0, 0));
+                        }
+                    }
                 }
             }
         }
@@ -71,6 +78,8 @@ void Recorder::compareFrames()
                      << (m_currentFrame.width() / Constants::block_width)
                     * (m_currentFrame.height() / Constants::block_width)
                      << "equal blocks in frame" << m_currentFrameId;
+
+
         }
     }
 }

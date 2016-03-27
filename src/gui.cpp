@@ -101,11 +101,11 @@ GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot), m_
 
 void GUI::resizeEvent(QResizeEvent* /* event */)
 {
-    QSize scaledSize = m_screenshot->getPixmap().size();
-    scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
+//    QSize scaledSize = m_screenshot->getPixmap().size();
+//    scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
 
-    if (!screenshotLabel->pixmap() || scaledSize != screenshotLabel->pixmap()->size())
-        updateScreenshotLabel();
+//    if (!screenshotLabel->pixmap() || scaledSize != screenshotLabel->pixmap()->size())
+//        updateScreenshotLabel();
 }
 
 void GUI::newScreenshotClicked()
