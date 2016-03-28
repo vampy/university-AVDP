@@ -84,6 +84,7 @@ private:
     void updateGuiAfterScreenshot();
 
     Recorder* m_recorder;
+
     // gui components
     QLabel* screenshotLabel;
     Screenshot* m_screenshot;
@@ -91,6 +92,7 @@ private:
     QCheckBox* hideThisWindowCheckBox;
     QPushButton* newScreenshotButton;
     QPushButton* startRecordingButton;
+
     // TODO make GUI hide while recording and stop with a shortcut
     QPushButton* stopRecordingButton;
 };

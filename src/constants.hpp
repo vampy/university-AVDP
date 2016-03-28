@@ -1,14 +1,16 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
 
 #include <QtGlobal>
 
-namespace Constants
+namespace constants
 {
-static const char app_name[] = "Video Streamer";
-static const char version[] = "0.1";
-static const char description[] = "Video streamer for forest";
-static const quint8 block_width = 16;
+const char* const APP_NAME = "Video Streamer";
+const char* const APP_VERSION = "0.1";
+const char* const APP_DESCRIPTION = "Video streamer for forest";
+const quint8 BLOCK_WIDTH = 16;
+const qreal DEFAULT_FPS = 25.0;
+const qreal DEFAULT_IMAGE_DIFF_THRESHOLD = 5.0;
 }
 
-#endif // CONSTANTS_H
+#endif // CONSTANTS_HPP

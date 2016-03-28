@@ -38,8 +38,8 @@ void Screenshot::take()
     Q_ASSERT(!m_image.isNull());
 
     // round up so that it is a multiple of block_width
-    auto new_size = QSize(util::roundUp(m_image.width(), Constants::block_width),
-        util::roundUp(m_image.height(), Constants::block_width));
+    auto new_size = QSize(util::roundUp(m_image.width(), constants::BLOCK_WIDTH),
+        util::roundUp(m_image.height(), constants::BLOCK_WIDTH));
 
     if (m_image.size() != new_size)
     {

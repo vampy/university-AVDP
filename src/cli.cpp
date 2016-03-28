@@ -3,7 +3,8 @@
 CLI::CLI(QObject* parent, QCommandLineParser& parser)
     : QObject(parent), m_screenshot(new Screenshot), m_timer(new QTimer(this))
 {
-    m_timer->setInterval(1000 / 25); // 25 fps
+    (void)parser;                                        // Hack for warning
+    m_timer->setInterval(1000 / constants::DEFAULT_FPS); // 25 fps
     m_timer->setSingleShot(false);
 
     connect(m_timer, &QTimer::timeout, this, &CLI::takeScreenshot);

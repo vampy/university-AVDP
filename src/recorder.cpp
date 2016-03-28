@@ -1,12 +1,13 @@
 #include "recorder.hpp"
 
-Recorder::Recorder(QObject* parent, int fps)
-    : QObject(parent), m_fps(fps), m_queue(new QQueue<QImage>), m_screenshot(new Screenshot), m_timer(new QTimer(this)),
-      m_workerTimer(new QTimer(this))
+Recorder::Recorder(QObject* parent, qreal fps)
+    : QObject(parent), m_queue(new QQueue<QImage>), m_screenshot(new Screenshot), m_timer(new QTimer(this)),
+      m_workerTimer(new QTimer(this)), m_fps(fps)
 {
-    m_timer->setInterval(1000 / m_fps);
+    int interval = 1000 / m_fps;
+    m_timer->setInterval(interval);
     m_timer->setSingleShot(false);
-    m_workerTimer->setInterval(1000 / fps);
+    m_workerTimer->setInterval(interval);
     m_workerTimer->setSingleShot(false);
 
     connect(m_timer, &QTimer::timeout, this, &Recorder::takeScreenshot);
@@ -49,31 +50,32 @@ void Recorder::compareFrames()
     {
         int counter = 0;
         QImage nextFrame = m_queue->dequeue();
-        for (int y = 0; y < nextFrame.height(); y += Constants::block_width)
+        for (int y = 0; y < nextFrame.height(); y += constants::BLOCK_WIDTH)
         {
-            for (int x = 0; x < nextFrame.width(); x += Constants::block_width)
+            for (int x = 0; x < nextFrame.width(); x += constants::BLOCK_WIDTH)
             {
                 Imageblock currentImageBlock(m_currentFrameId, QPoint(x, y),
-                    m_auxCurrentFrame.copy(x, y, Constants::block_width, Constants::block_width));
+                    m_auxCurrentFrame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH));
                 Imageblock nextImageBlock(m_currentFrameId + 1, QPoint(x, y),
-                    nextFrame.copy(x, y, Constants::block_width, Constants::block_width));
+                    nextFrame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH));
                 if (nextImageBlock.isEqualTo(currentImageBlock))
                 {
                     counter++;
-                    //                    for (int j = 0; j < Constants::block_width; j++)
-                    //                    {
-                    //                        for (int i = 0; i < Constants::block_width; i++)
-                    //                        {
-                    //                            m_currentFrame.setPixel(x + i, y + j, qRgb(255, 0, 0));
-                    //                        }
-                    //                    }
+                    //                                        for (int j = 0; j < constants::BLOCK_WIDTH; j++)
+                    //                                        {
+                    //                                            for (int i = 0; i < constants::BLOCK_WIDTH; i++)
+                    //                                            {
+                    //                                                m_currentFrame.setPixel(x + i, y + j, qRgb(255, 0,
+                    //                                                0));
+                    //                                            }
+                    //                                        }
                 }
                 else
                 {
                     // copy the blocks that are not equal from nextFrame to m_currentFrame.
-                    for (int j = 0; j < Constants::block_width; j++)
+                    for (int j = 0; j < constants::BLOCK_WIDTH; j++)
                     {
-                        for (int i = 0; i < Constants::block_width; i++)
+                        for (int i = 0; i < constants::BLOCK_WIDTH; i++)
                         {
                             m_auxCurrentFrame.setPixel(x + i, y + j, nextFrame.pixel(x + i, y + j));
                             m_currentFrame.setPixel(x + i, y + j, nextFrame.pixel(x + i, y + j));
@@ -87,8 +89,8 @@ void Recorder::compareFrames()
         if (m_currentFrameId % 25 == 0)
         {
             qDebug() << "We have " << counter << "/"
-                     << (m_currentFrame.width() / Constants::block_width)
-                    * (m_currentFrame.height() / Constants::block_width)
+                     << (m_currentFrame.width() / constants::BLOCK_WIDTH)
+                    * (m_currentFrame.height() / constants::BLOCK_WIDTH)
                      << "equal blocks in frame" << m_currentFrameId;
         }
     }

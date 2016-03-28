@@ -9,13 +9,13 @@ int main(int argc, char* argv[])
 {
     // Warmup app
     QApplication app(argc, argv);
-    QApplication::setApplicationDisplayName(Constants::app_name);
-    QApplication::setApplicationName(Constants::app_name);
-    QApplication::setApplicationVersion(Constants::version);
+    QApplication::setApplicationDisplayName(constants::APP_NAME);
+    QApplication::setApplicationName(constants::APP_NAME);
+    QApplication::setApplicationVersion(constants::APP_VERSION);
 
     // Parse command line
     QCommandLineParser parser;
-    parser.setApplicationDescription(Constants::description);
+    parser.setApplicationDescription(constants::APP_DESCRIPTION);
     parser.addHelpOption();
     parser.addVersionOption();
 

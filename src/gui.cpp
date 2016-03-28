@@ -42,7 +42,7 @@
 
 #include "gui.hpp"
 
-GUI::GUI() : screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot), m_recorder(new Recorder(this, 25))
+GUI::GUI() : m_recorder(new Recorder(this, 25)), screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot)
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     screenshotLabel->setAlignment(Qt::AlignCenter);

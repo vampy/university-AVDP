@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QImage>
 #include "util.hpp"
+#include "constants.hpp"
 
 class Imageblock : public QObject
 {
@@ -18,7 +19,6 @@ private:
     int m_frameId;
     QPoint m_position;
     QImage m_image;
-    double m_threshold = 5.0;
 };
 
 #endif // IMAGEBLOCK_H

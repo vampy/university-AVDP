@@ -16,7 +16,7 @@ bool Imageblock::isEqualTo(const Imageblock& other)
         }
     }
     mse = mse / (double)(m_image.width() * m_image.width());
-    return mse < m_threshold;
+    return mse < constants::DEFAULT_IMAGE_DIFF_THRESHOLD;
 }
 
 QImage Imageblock::getImage() const { return m_image; }
