@@ -50,10 +50,11 @@ void Recorder::compareFrames()
     {
         int counter = 0;
         QImage nextFrame = m_queue->dequeue();
-        for (int y = 0; y < nextFrame.height(); y += constants::BLOCK_WIDTH)
+        for (int x = 0; x < nextFrame.width(); x += constants::BLOCK_WIDTH)
         {
-            for (int x = 0; x < nextFrame.width(); x += constants::BLOCK_WIDTH)
+            for (int y = 0; y < nextFrame.height(); y += constants::BLOCK_WIDTH)
             {
+
                 Imageblock currentImageBlock(m_currentFrameId, QPoint(x, y),
                     m_auxCurrentFrame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH));
                 Imageblock nextImageBlock(m_currentFrameId + 1, QPoint(x, y),
@@ -61,21 +62,20 @@ void Recorder::compareFrames()
                 if (nextImageBlock.isEqualTo(currentImageBlock))
                 {
                     counter++;
-                    //                                        for (int j = 0; j < constants::BLOCK_WIDTH; j++)
-                    //                                        {
-                    //                                            for (int i = 0; i < constants::BLOCK_WIDTH; i++)
-                    //                                            {
-                    //                                                m_currentFrame.setPixel(x + i, y + j, qRgb(255, 0,
-                    //                                                0));
-                    //                                            }
-                    //                                        }
+                    //                    for (int j = 0; j < constants::BLOCK_WIDTH; j++)
+                    //                    {
+                    //                        for (int i = 0; i < constants::BLOCK_WIDTH; i++)
+                    //                        {
+                    //                            m_currentFrame.setPixel(x + i, y + j, qRgb(255, 0, 0));
+                    //                        }
+                    //                    }
                 }
                 else
                 {
                     // copy the blocks that are not equal from nextFrame to m_currentFrame.
-                    for (int j = 0; j < constants::BLOCK_WIDTH; j++)
+                    for (int i = 0; i < constants::BLOCK_WIDTH; i++)
                     {
-                        for (int i = 0; i < constants::BLOCK_WIDTH; i++)
+                        for (int j = 0; j < constants::BLOCK_WIDTH; j++)
                         {
                             m_auxCurrentFrame.setPixel(x + i, y + j, nextFrame.pixel(x + i, y + j));
                             m_currentFrame.setPixel(x + i, y + j, nextFrame.pixel(x + i, y + j));

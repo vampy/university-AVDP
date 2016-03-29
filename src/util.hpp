@@ -10,11 +10,9 @@ inline int roundUp(int numToRound, int multiple)
 
     return remainder == 0 ? numToRound : (numToRound + multiple - remainder);
 }
-inline double yComponent(QRgb color)
-{
-    double yComponent = 0.299 * qRed(color) + 0.587 * qGreen(color) + 0.114 * qBlue(color);
-    return yComponent;
-}
+
+// Calculate luma https://en.wikipedia.org/wiki/Luma_%28video%29
+inline double yComponent(QRgb color) { return 0.299 * qRed(color) + 0.587 * qGreen(color) + 0.114 * qBlue(color); }
 }
 
 #endif // UTIL_H
