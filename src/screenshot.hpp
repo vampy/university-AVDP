@@ -7,6 +7,7 @@
 #include <QScreen>
 #include <QDebug>
 #include <QGuiApplication>
+#include <QTime>
 #include "imageblock.hpp"
 #include "constants.hpp"
 #include "util.hpp"

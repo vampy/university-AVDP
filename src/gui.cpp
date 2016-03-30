@@ -50,10 +50,10 @@ GUI::GUI() : m_recorder(new Recorder(this, 25)), screenshotLabel(new QLabel(this
     const QRect screenGeometry = QApplication::desktop()->screenGeometry(this);
     screenshotLabel->setMinimumSize(screenGeometry.width() / 8, screenGeometry.height() / 8);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    auto mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(screenshotLabel);
 
-    QGroupBox* optionsGroupBox = new QGroupBox("Options", this);
+    auto optionsGroupBox = new QGroupBox("Options", this);
     delaySpinBox = new QSpinBox(optionsGroupBox);
     delaySpinBox->setSuffix(" s");
     delaySpinBox->setMaximum(60);
@@ -63,24 +63,26 @@ GUI::GUI() : m_recorder(new Recorder(this, 25)), screenshotLabel(new QLabel(this
 
     hideThisWindowCheckBox = new QCheckBox("Hide This Window", optionsGroupBox);
 
-    QGridLayout* optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
+    auto optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
     optionsGroupBoxLayout->addWidget(new QLabel("Screenshot Delay:", this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
     optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0, 1, 2);
     mainLayout->addWidget(optionsGroupBox);
 
-    QHBoxLayout* buttonsLayout = new QHBoxLayout;
+    auto buttonsLayout = new QHBoxLayout;
     newScreenshotButton = new QPushButton("New Screenshot", this);
     startRecordingButton = new QPushButton("Start Recording", this);
     stopRecordingButton = new QPushButton("Stop Recording", this);
-    QPushButton* saveScreenshotButton = new QPushButton("Save Screenshot", this);
-    QPushButton* quitScreenshotButton = new QPushButton("Quit", this);
+    auto saveScreenshotButton = new QPushButton("Save Screenshot", this);
+    auto toggleDebugModeButton = new QPushButton("Toggle Debug", this);
+    auto quitScreenshotButton = new QPushButton("Quit", this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
 
     connect(newScreenshotButton, &QPushButton::clicked, this, &GUI::newScreenshotClicked);
     connect(startRecordingButton, &QPushButton::clicked, this, &GUI::startRecordingClicked);
     connect(stopRecordingButton, &QPushButton::clicked, this, &GUI::stopRecordingClicked);
     connect(saveScreenshotButton, &QPushButton::clicked, this, &GUI::saveScreenshotClicked);
+    connect(toggleDebugModeButton, &QPushButton::clicked, this, &GUI::toggleDebugModeButtonClicked);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
 
     // new screenshot was taken signal
@@ -90,6 +92,7 @@ GUI::GUI() : m_recorder(new Recorder(this, 25)), screenshotLabel(new QLabel(this
     buttonsLayout->addWidget(startRecordingButton);
     buttonsLayout->addWidget(stopRecordingButton);
     buttonsLayout->addWidget(saveScreenshotButton);
+    buttonsLayout->addWidget(toggleDebugModeButton);
     buttonsLayout->addWidget(quitScreenshotButton);
     buttonsLayout->addStretch();
     mainLayout->addLayout(buttonsLayout);
@@ -155,6 +158,13 @@ void GUI::saveScreenshotClicked()
         QMessageBox::warning(this, "Save Error",
             QString("The image could not be saved to \"%1\".").arg(QDir::toNativeSeparators(fileName)));
     }
+}
+
+void GUI::toggleDebugModeButtonClicked()
+{
+    static bool toggle = false;
+    toggle = !toggle;
+    m_recorder->setDebug(toggle);
 }
 
 void GUI::updateCheckBox()

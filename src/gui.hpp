@@ -69,6 +69,7 @@ private slots:
     void newScreenshotClicked();
     void newScreenshot();
     void saveScreenshotClicked();
+    void toggleDebugModeButtonClicked();
     void updateCheckBox();
 
     void startRecordingClicked();

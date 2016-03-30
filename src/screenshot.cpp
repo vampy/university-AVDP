@@ -1,5 +1,5 @@
 #include "screenshot.hpp"
-#include <QTime>
+
 Screenshot::Screenshot() {}
 
 void Screenshot::take(int msec)
@@ -12,6 +12,10 @@ void Screenshot::take(int msec)
 
 void Screenshot::take()
 {
+    QTime debug_time;
+    debug_time.start();
+    static qint32 debug_counter = 0;
+
     // TODO: select screen from cli and GUI
     // https://stackoverflow.com/questions/29988952/how-can-i-take-a-print-screen-using-qt-c-with-various-monitors
     QScreen* screen;
@@ -43,19 +47,18 @@ void Screenshot::take()
 
     if (m_image.size() != new_size)
     {
-        QTime t;
-        t.start();
-
         // black pixels will be inserted if the crop is bigger than the actual image, which
         // will happen if the width or height is not a multiple of 16
         m_image = m_image.copy(0, 0, new_size.width(), new_size.height());
-
-        //        qDebug() << "Screenshot: copy image" << t.elapsed() << "ms";
     }
     // TODO remove and use only QImage
     m_pixmap = QPixmap::fromImage(m_image);
     Q_ASSERT(!m_pixmap.isNull());
     emit onScreenshot();
+
+    if (debug_counter % static_cast<qint32>(constants::DEFAULT_FPS) == 0)
+        qDebug() << "Screenshot::take" << debug_time.elapsed() << "ms";
+    debug_counter++;
 }
 
 QPixmap Screenshot::getPixmap() const { return m_pixmap; }
