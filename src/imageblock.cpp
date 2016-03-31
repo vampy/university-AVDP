@@ -5,7 +5,9 @@ Imageblock::Imageblock(int frameId, QPoint position, QImage image)
 {
 }
 
-bool Imageblock::isEqualTo(const Imageblock& other)
+QImage Imageblock::getImage() const { return m_image; }
+
+bool Imageblock::operator==(const Imageblock& other)
 {
     qreal mse = 0.0;
     auto other_image = other.getImage();
@@ -22,4 +24,4 @@ bool Imageblock::isEqualTo(const Imageblock& other)
     return mse < constants::DEFAULT_IMAGE_DIFF_THRESHOLD;
 }
 
-QImage Imageblock::getImage() const { return m_image; }
+bool Imageblock::operator!=(const Imageblock& other) { return !(*this == other); }

@@ -12,8 +12,10 @@ class Imageblock : public QObject
     Q_OBJECT
 public:
     Imageblock(int frameId, QPoint position, QImage image);
-    bool isEqualTo(const Imageblock& other);
     QImage getImage() const;
+
+    bool operator==(const Imageblock& other);
+    bool operator!=(const Imageblock& other);
 
 private:
     int m_frameId;

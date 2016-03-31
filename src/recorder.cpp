@@ -74,7 +74,7 @@ void Recorder::compareFrames()
             Imageblock next_block(m_current_frame_id + 1, QPoint(x, y),
                 next_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH));
 
-            if (next_block.isEqualTo(current_block))
+            if (next_block == current_block)
             {
                 debug_counter++;
 
@@ -82,9 +82,9 @@ void Recorder::compareFrames()
                 if (!m_debug)
                     continue;
 
-                for (int j = 0; j < constants::BLOCK_WIDTH; j++)
+                for (int i = 0; i < constants::BLOCK_WIDTH; i++)
                 {
-                    for (int i = 0; i < constants::BLOCK_WIDTH; i++)
+                    for (int j = 0; j < constants::BLOCK_WIDTH; j++)
                     {
                         m_current_frame.setPixel(x + i, y + j, qRgb(255, 0, 0));
                     }

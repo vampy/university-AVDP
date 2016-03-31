@@ -48,7 +48,5 @@ int main(int argc, char* argv[])
         QTimer::singleShot(0, cli, &CLI::run);
     }
 
-    //    QApplication::desktop()->grab()
-
     return app.exec();
 }

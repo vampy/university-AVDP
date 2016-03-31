@@ -19,7 +19,7 @@ void Screenshot::take()
     // TODO: select screen from cli and GUI
     // https://stackoverflow.com/questions/29988952/how-can-i-take-a-print-screen-using-qt-c-with-various-monitors
     QScreen* screen;
-    auto screens = QGuiApplication::screens();
+    auto screens = getScreens();
 
     if (screens.size() > 1)
     {
@@ -38,7 +38,8 @@ void Screenshot::take()
     }
 
     m_image = screen->grabWindow(0, screen->geometry().x(), screen->geometry().y(), screen->geometry().width(),
-                          screen->geometry().height()).toImage();
+                        screen->geometry().height())
+                  .toImage();
     Q_ASSERT(!m_image.isNull());
 
     // round up so that it is a multiple of block_width
@@ -63,8 +64,14 @@ void Screenshot::take()
 
 QPixmap Screenshot::getPixmap() const { return m_pixmap; }
 
-void Screenshot::setPixmap(const QPixmap& pixmap) { m_pixmap = pixmap; }
-
 QImage Screenshot::getImage() const { return m_image; }
 
-void Screenshot::setImage(const QImage& image) { m_image = image; }
+void Screenshot::setScreenID(const qint8 &screen_id)
+{
+    m_screen_id = screen_id;
+}
+
+QList<QScreen *> Screenshot::getScreens() const
+{
+    return QGuiApplication::screens();
+}

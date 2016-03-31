@@ -23,10 +23,10 @@ public:
     void take();
 
     QPixmap getPixmap() const;
-    void setPixmap(const QPixmap& pixmap);
-
     QImage getImage() const;
-    void setImage(const QImage& image);
+
+    void setScreenID(const qint8 &screen_id);
+    QList<QScreen*> getScreens() const;
 
 signals:
     void onScreenshot();
@@ -34,6 +34,11 @@ signals:
 private:
     QPixmap m_pixmap;
     QImage m_image;
+
+    // The screen we take the screenshot of, -1 means capture all
+    qint8 m_screen_id = -1;
+    qint16 m_capture_width = -1;
+    qint16 m_capture_height = -1;
 
     QQueue<QImage>* m_queue;
 };

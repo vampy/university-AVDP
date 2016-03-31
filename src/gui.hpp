@@ -66,11 +66,8 @@ protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
 
 private slots:
-    void newScreenshotClicked();
     void newScreenshot();
-    void saveScreenshotClicked();
     void toggleDebugModeButtonClicked();
-    void updateCheckBox();
 
     void startRecordingClicked();
     void stopRecordingClicked();
@@ -87,15 +84,12 @@ private:
     Recorder* m_recorder;
 
     // gui components
-    QLabel* screenshotLabel;
+    QLabel* m_screenshot_label;
     Screenshot* m_screenshot;
-    QSpinBox* delaySpinBox;
-    QCheckBox* hideThisWindowCheckBox;
-    QPushButton* newScreenshotButton;
-    QPushButton* startRecordingButton;
-
-    // TODO make GUI hide while recording and stop with a shortcut
-    QPushButton* stopRecordingButton;
+    QCheckBox* m_hide_window_checkbox;
+    QPushButton* m_start_recording_button;
+    // TODO make GUI hide wile recording and stop with a shortcut
+    QPushButton* m_stop_recording_button;
 };
 
 #endif // SCREENSHOTGUI_H

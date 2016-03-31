@@ -42,63 +42,49 @@
 
 #include "gui.hpp"
 
-GUI::GUI() : m_recorder(new Recorder(this, 25)), screenshotLabel(new QLabel(this)), m_screenshot(new Screenshot)
+GUI::GUI() : m_recorder(new Recorder(this, 25)), m_screenshot_label(new QLabel(this)), m_screenshot(new Screenshot)
 {
-    screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    screenshotLabel->setAlignment(Qt::AlignCenter);
+    m_screenshot_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_screenshot_label->setAlignment(Qt::AlignCenter);
 
     const QRect screenGeometry = QApplication::desktop()->screenGeometry(this);
-    screenshotLabel->setMinimumSize(screenGeometry.width() / 8, screenGeometry.height() / 8);
+    m_screenshot_label->setMinimumSize(screenGeometry.width() / 8, screenGeometry.height() / 8);
 
     auto mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(screenshotLabel);
+    mainLayout->addWidget(m_screenshot_label);
 
     auto optionsGroupBox = new QGroupBox("Options", this);
-    delaySpinBox = new QSpinBox(optionsGroupBox);
-    delaySpinBox->setSuffix(" s");
-    delaySpinBox->setMaximum(60);
 
-    typedef void (QSpinBox::*QSpinBoxIntSignal)(int);
-    connect(delaySpinBox, static_cast<QSpinBoxIntSignal>(&QSpinBox::valueChanged), this, &GUI::updateCheckBox);
-
-    hideThisWindowCheckBox = new QCheckBox("Hide This Window", optionsGroupBox);
+    m_hide_window_checkbox = new QCheckBox("Hide This Window", optionsGroupBox);
 
     auto optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
-    optionsGroupBoxLayout->addWidget(new QLabel("Screenshot Delay:", this), 0, 0);
-    optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
-    optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0, 1, 2);
+    optionsGroupBoxLayout->addWidget(m_hide_window_checkbox, 1, 0, 1, 2);
     mainLayout->addWidget(optionsGroupBox);
 
     auto buttonsLayout = new QHBoxLayout;
-    newScreenshotButton = new QPushButton("New Screenshot", this);
-    startRecordingButton = new QPushButton("Start Recording", this);
-    stopRecordingButton = new QPushButton("Stop Recording", this);
-    auto saveScreenshotButton = new QPushButton("Save Screenshot", this);
+    m_start_recording_button = new QPushButton("Start Recording", this);
+    m_stop_recording_button = new QPushButton("Stop Recording", this);
     auto toggleDebugModeButton = new QPushButton("Toggle Debug", this);
     auto quitScreenshotButton = new QPushButton("Quit", this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
 
-    connect(newScreenshotButton, &QPushButton::clicked, this, &GUI::newScreenshotClicked);
-    connect(startRecordingButton, &QPushButton::clicked, this, &GUI::startRecordingClicked);
-    connect(stopRecordingButton, &QPushButton::clicked, this, &GUI::stopRecordingClicked);
-    connect(saveScreenshotButton, &QPushButton::clicked, this, &GUI::saveScreenshotClicked);
+    connect(m_start_recording_button, &QPushButton::clicked, this, &GUI::startRecordingClicked);
+    connect(m_stop_recording_button, &QPushButton::clicked, this, &GUI::stopRecordingClicked);
     connect(toggleDebugModeButton, &QPushButton::clicked, this, &GUI::toggleDebugModeButtonClicked);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
 
     // new screenshot was taken signal
     connect(m_screenshot, &Screenshot::onScreenshot, this, &GUI::newScreenshot);
     connect(m_recorder, &Recorder::onFrameReady, this, &GUI::newFrame);
-    buttonsLayout->addWidget(newScreenshotButton);
-    buttonsLayout->addWidget(startRecordingButton);
-    buttonsLayout->addWidget(stopRecordingButton);
-    buttonsLayout->addWidget(saveScreenshotButton);
+
+    buttonsLayout->addWidget(m_start_recording_button);
+    buttonsLayout->addWidget(m_stop_recording_button);
     buttonsLayout->addWidget(toggleDebugModeButton);
     buttonsLayout->addWidget(quitScreenshotButton);
     buttonsLayout->addStretch();
     mainLayout->addLayout(buttonsLayout);
 
-    delaySpinBox->setValue(5);
-    setWindowTitle("Screenshot");
+    setWindowTitle(constants::APP_NAME);
     resize(300, 200);
 }
 
@@ -111,53 +97,10 @@ void GUI::resizeEvent(QResizeEvent* /* event */)
     //        updateScreenshotLabel();
 }
 
-void GUI::newScreenshotClicked()
-{
-    if (hideThisWindowCheckBox->isChecked())
-        hide();
-    newScreenshotButton->setDisabled(true);
-
-    // after the delay will call the slot bellow, newScreenshot
-    m_screenshot->take(delaySpinBox->value() * 1000);
-}
-
 void GUI::newScreenshot()
 {
     qDebug() << "Screenshot taken";
     updateGuiAfterScreenshot();
-}
-
-void GUI::saveScreenshotClicked()
-{
-    const QString format = "png";
-    QString initialPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    if (initialPath.isEmpty())
-        initialPath = QDir::currentPath();
-
-    initialPath += "/untitled." + format;
-
-    QFileDialog fileDialog(this, "Save As", initialPath);
-    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-    fileDialog.setFileMode(QFileDialog::AnyFile);
-    fileDialog.setDirectory(initialPath);
-
-    QStringList mimeTypes;
-    foreach (const QByteArray& bf, QImageWriter::supportedMimeTypes())
-        mimeTypes.append(QLatin1String(bf));
-
-    fileDialog.setMimeTypeFilters(mimeTypes);
-    fileDialog.selectMimeTypeFilter("image/" + format);
-    fileDialog.setDefaultSuffix(format);
-
-    if (fileDialog.exec() != QDialog::Accepted)
-        return;
-
-    const QString fileName = fileDialog.selectedFiles().first();
-    if (!m_screenshot->getPixmap().save(fileName))
-    {
-        QMessageBox::warning(this, "Save Error",
-            QString("The image could not be saved to \"%1\".").arg(QDir::toNativeSeparators(fileName)));
-    }
 }
 
 void GUI::toggleDebugModeButtonClicked()
@@ -165,19 +108,6 @@ void GUI::toggleDebugModeButtonClicked()
     static bool toggle = false;
     toggle = !toggle;
     m_recorder->setDebug(toggle);
-}
-
-void GUI::updateCheckBox()
-{
-    if (delaySpinBox->value() == 0)
-    {
-        hideThisWindowCheckBox->setDisabled(true);
-        hideThisWindowCheckBox->setChecked(false);
-    }
-    else
-    {
-        hideThisWindowCheckBox->setDisabled(false);
-    }
 }
 
 void GUI::startRecordingClicked() { m_recorder->startRecording(); }
@@ -191,15 +121,15 @@ void GUI::updateGuiAfterNewFrame() { updateFrameLabel(); }
 void GUI::updateFrameLabel()
 {
     auto image = m_recorder->getCurrentFrame();
-    screenshotLabel->setPixmap(
-        QPixmap::fromImage(image).scaled(screenshotLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    m_screenshot_label->setPixmap(
+        QPixmap::fromImage(image).scaled(m_screenshot_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 void GUI::updateScreenshotLabel()
 {
     auto pixmap = m_screenshot->getPixmap();
     // scale to the label
-    screenshotLabel->setPixmap(pixmap.scaled(screenshotLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    m_screenshot_label->setPixmap(pixmap.scaled(m_screenshot_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 // Update all the componensts afte a screenshot was taken
@@ -207,7 +137,6 @@ void GUI::updateGuiAfterScreenshot()
 {
     updateScreenshotLabel();
 
-    newScreenshotButton->setDisabled(false);
-    if (hideThisWindowCheckBox->isChecked())
+    if (m_hide_window_checkbox->isChecked())
         show();
 }
