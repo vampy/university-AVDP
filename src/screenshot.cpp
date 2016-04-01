@@ -38,8 +38,7 @@ void Screenshot::take()
     }
 
     m_image = screen->grabWindow(0, screen->geometry().x(), screen->geometry().y(), screen->geometry().width(),
-                        screen->geometry().height())
-                  .toImage();
+                          screen->geometry().height()).toImage();
     Q_ASSERT(!m_image.isNull());
 
     // round up so that it is a multiple of block_width
@@ -66,12 +65,6 @@ QPixmap Screenshot::getPixmap() const { return m_pixmap; }
 
 QImage Screenshot::getImage() const { return m_image; }
 
-void Screenshot::setScreenID(const qint8 &screen_id)
-{
-    m_screen_id = screen_id;
-}
+void Screenshot::setScreenID(const qint8& screen_id) { m_screen_id = screen_id; }
 
-QList<QScreen *> Screenshot::getScreens() const
-{
-    return QGuiApplication::screens();
-}
+QList<QScreen*> Screenshot::getScreens() const { return QGuiApplication::screens(); }

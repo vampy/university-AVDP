@@ -1,14 +1,14 @@
-#ifndef RECORDER_H
-#define RECORDER_H
+#ifndef RECORDER_HPP
+#define RECORDER_HPP
 
-#include <QObject>
 #include <QQueue>
-#include <QDebug>
-#include <QTime>
-
 #include "screenshot.hpp"
 #include "imageblock.hpp"
 #include "constants.hpp"
+
+class QObject;
+class QTime;
+class QDebug;
 
 class Recorder : public QObject
 {
@@ -45,4 +45,4 @@ private:
     bool m_debug = false;
 };
 
-#endif // RECORDER_H
+#endif // RECORDER_HPP

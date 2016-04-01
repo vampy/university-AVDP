@@ -1,7 +1,6 @@
-#ifndef SCREENSHOT_H
-#define SCREENSHOT_H
+#ifndef SCREENSHOT_HPP
+#define SCREENSHOT_HPP
 
-#include <QObject>
 #include <QPixmap>
 #include <QTimer>
 #include <QScreen>
@@ -11,6 +10,8 @@
 #include "imageblock.hpp"
 #include "constants.hpp"
 #include "util.hpp"
+
+class QObject;
 
 class Screenshot : public QObject
 {
@@ -25,7 +26,7 @@ public:
     QPixmap getPixmap() const;
     QImage getImage() const;
 
-    void setScreenID(const qint8 &screen_id);
+    void setScreenID(const qint8& screen_id);
     QList<QScreen*> getScreens() const;
 
 signals:
@@ -43,4 +44,4 @@ private:
     QQueue<QImage>* m_queue;
 };
 
-#endif // SCREENSHOT_H
+#endif // SCREENSHOT_HPP

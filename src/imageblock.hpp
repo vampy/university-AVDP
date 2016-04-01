@@ -1,8 +1,6 @@
-#ifndef IMAGEBLOCK_H
-#define IMAGEBLOCK_H
+#ifndef IMAGEBLOCK_HPP
+#define IMAGEBLOCK_HPP
 
-#include <QObject>
-#include <QDebug>
 #include <QImage>
 #include "util.hpp"
 #include "constants.hpp"
@@ -23,4 +21,4 @@ private:
     QImage m_image;
 };
 
-#endif // IMAGEBLOCK_H
+#endif // IMAGEBLOCK_HPP

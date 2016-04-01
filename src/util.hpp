@@ -1,6 +1,8 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef UTIL_HPP
+#define UTIL_HPP
+
 #include <QColor>
+
 namespace util
 {
 // Round to then nearest multiple
@@ -15,4 +17,4 @@ inline int roundUp(int numToRound, int multiple)
 inline double yComponent(QRgb color) { return 0.299 * qRed(color) + 0.587 * qGreen(color) + 0.114 * qBlue(color); }
 }
 
-#endif // UTIL_H
+#endif // UTIL_HPP
