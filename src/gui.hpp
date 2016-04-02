@@ -2,6 +2,7 @@
 #define SCREENSHOTGUI_HPP
 
 #include <QWidget>
+#include <QCommandLineParser>
 #include "screenshot.hpp"
 #include "recorder.hpp"
 
@@ -20,7 +21,7 @@ class GUI : public QWidget
     Q_OBJECT
 
 public:
-    GUI();
+    GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 screen_w, qint16 screen_h);
 
 protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;

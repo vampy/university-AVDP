@@ -14,7 +14,13 @@ class Recorder : public QObject
 {
     Q_OBJECT
 public:
-    explicit Recorder(QObject* parent = 0, qreal fps = constants::DEFAULT_FPS);
+    explicit Recorder(QObject* parent = nullptr,
+        qreal fps = constants::DEFAULT_FPS,
+        qint8 screen_id = constants::DEFAULT_SCREEN,
+        qint16 screen_x = constants::DEFAULT_SCREEN_POS,
+        qint16 screen_y = constants::DEFAULT_SCREEN_POS,
+        qint16 screen_width = constants::DEFAULT_SCREEN_SIZE,
+        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     QImage getCurrentFrame();
 
     void setDebug(bool debug);

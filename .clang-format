@@ -1,6 +1,10 @@
+# See https://clangformat.com/ and http://llvm.org/releases/3.6.0/tools/clang/docs/ClangFormatStyleOptions.html
 ---
 Language:        Cpp
+
+# The extra indent or outdent of access modifiers, e.g. public:
 AccessModifierOffset: -4
+
 AlignAfterOpenBracket: false
 AlignEscapedNewlinesLeft: true
 AlignOperands: false
@@ -17,8 +21,10 @@ AlwaysBreakBeforeMultilineStrings: false
 BreakBeforeBinaryOperators: All
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: false
-BinPackParameters: true
-BinPackArguments: true
+
+# If false, a function call’s or function definition’s parameters will either all be on the same line or will have one line each.
+BinPackParameters: false
+BinPackArguments: false
 
 
 # Pointer and reference alignment style.

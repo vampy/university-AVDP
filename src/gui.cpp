@@ -2,7 +2,9 @@
 
 #include "gui.hpp"
 
-GUI::GUI() : m_recorder(new Recorder(this, 25)), m_screenshot_label(new QLabel(this))
+GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 screen_w, qint16 screen_h)
+    : m_recorder(new Recorder(this, fps, screen_id, screen_x, screen_y, screen_w, screen_h)),
+      m_screenshot_label(new QLabel(this))
 {
     m_screenshot_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_screenshot_label->setAlignment(Qt::AlignCenter);

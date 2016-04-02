@@ -15,7 +15,7 @@ class CLI : public QObject
     Q_OBJECT
 
 public:
-    CLI(QObject* parent, QCommandLineParser& parser);
+    CLI(QObject* parent);
 
     void quit();
 

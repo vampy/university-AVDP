@@ -1,8 +1,15 @@
 #include "recorder.hpp"
 
-Recorder::Recorder(QObject* parent, qreal fps)
-    : QObject(parent), m_queue(new QQueue<QImage>), m_screenshot(new Screenshot), m_timer(new QTimer(this)),
-      m_workerTimer(new QTimer(this)), m_fps(fps)
+Recorder::Recorder(QObject* parent,
+    qreal fps,
+    qint8 screen_id,
+    qint16 screen_x,
+    qint16 screen_y,
+    qint16 screen_width,
+    qint16 screen_height)
+    : QObject(parent), m_queue(new QQueue<QImage>),
+      m_screenshot(new Screenshot(screen_id, screen_x, screen_y, screen_width, screen_height)),
+      m_timer(new QTimer(this)), m_workerTimer(new QTimer(this)), m_fps(fps)
 {
     int interval = 1000 / m_fps;
     m_timer->setInterval(interval);
@@ -71,7 +78,8 @@ void Recorder::compareFrames()
 
             Q_ASSERT(!current_frame.isNull());
             Imageblock current_block(m_current_frame_id, QPoint(x, y), current_frame);
-            Imageblock next_block(m_current_frame_id + 1, QPoint(x, y),
+            Imageblock next_block(m_current_frame_id + 1,
+                QPoint(x, y),
                 next_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH));
 
             if (next_block == current_block)

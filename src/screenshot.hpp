@@ -17,29 +17,41 @@ class Screenshot : public QObject
 {
     Q_OBJECT
 public:
-    Screenshot();
+    explicit Screenshot(qint8 screen_id = constants::DEFAULT_SCREEN,
+        qint16 screen_x = constants::DEFAULT_SCREEN_POS,
+        qint16 screen_y = constants::DEFAULT_SCREEN_POS,
+        qint16 screen_width = constants::DEFAULT_SCREEN_SIZE,
+        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
 
     // Take a screenshot
     void take(int msec);
     void take();
 
-    QPixmap getPixmap() const;
     QImage getImage() const;
 
-    void setScreenID(const qint8& screen_id);
+    void setScreen(qint8 screen_id,
+        qint16 screen_x = constants::DEFAULT_SCREEN_POS,
+        qint16 screen_y = constants::DEFAULT_SCREEN_POS,
+        qint16 screen_width = constants::DEFAULT_SCREEN_SIZE,
+        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     QList<QScreen*> getScreens() const;
 
 signals:
     void onScreenshot();
 
 private:
-    QPixmap m_pixmap;
     QImage m_image;
 
-    // The screen we take the screenshot of, -1 means capture all
-    qint8 m_screen_id = -1;
-    qint16 m_capture_width = -1;
-    qint16 m_capture_height = -1;
+    // The screen we take the screenshot of
+    QScreen* m_screen = nullptr;
+
+    // will default to m_screen->geometry().x()/y()
+    qint16 m_screen_x = constants::DEFAULT_SCREEN_POS;
+    qint16 m_screen_y = constants::DEFAULT_SCREEN_POS;
+
+    // will default to m_scren->geometry().height()/width()
+    qint16 m_screen_width = constants::DEFAULT_SCREEN_SIZE;
+    qint16 m_screen_height = constants::DEFAULT_SCREEN_SIZE;
 
     QQueue<QImage>* m_queue;
 };

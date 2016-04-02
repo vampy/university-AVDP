@@ -1,7 +1,6 @@
 #include "cli.hpp"
 
-CLI::CLI(QObject* parent, QCommandLineParser& /* parser */)
-    : QObject(parent), m_screenshot(new Screenshot), m_timer(new QTimer(this))
+CLI::CLI(QObject* parent) : QObject(parent), m_screenshot(new Screenshot), m_timer(new QTimer(this))
 {
     m_timer->setInterval(1000 / constants::DEFAULT_FPS); // 25 fps
     m_timer->setSingleShot(false);
