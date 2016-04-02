@@ -23,11 +23,11 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
     options_groupbox_layout->addWidget(m_hide_window_checkbox, 1, 0, 1, 2);
     main_layout->addWidget(optionsGroupBox);
 
-    auto buttons_layout = new QHBoxLayout;
-    auto start_recording_button = new QPushButton("Start Recording", this);
-    auto stop_recording_button = new QPushButton("Stop Recording", this);
+    auto buttons_layout           = new QHBoxLayout;
+    auto start_recording_button   = new QPushButton("Start Recording", this);
+    auto stop_recording_button    = new QPushButton("Stop Recording", this);
     auto toggle_debug_mode_button = new QPushButton("Toggle Debug", this);
-    auto quit_screenshot_button = new QPushButton("Quit", this);
+    auto quit_screenshot_button   = new QPushButton("Quit", this);
 
     // set shortcuts
     quit_screenshot_button->setShortcut(Qt::CTRL + Qt::Key_Q);
@@ -58,7 +58,7 @@ void GUI::resizeEvent(QResizeEvent* /* event */) { updateFrameLabel(); }
 void GUI::toggleDebugModeButtonClicked()
 {
     static bool toggle = false;
-    toggle = !toggle;
+    toggle             = !toggle;
     m_recorder->setDebug(toggle);
 }
 

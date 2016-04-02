@@ -1,14 +1,14 @@
 #ifndef SCREENSHOT_HPP
 #define SCREENSHOT_HPP
 
-#include <QPixmap>
-#include <QTimer>
-#include <QScreen>
 #include <QDebug>
 #include <QGuiApplication>
+#include <QPixmap>
+#include <QScreen>
 #include <QTime>
-#include "imageblock.hpp"
+#include <QTimer>
 #include "constants.hpp"
+#include "imageblock.hpp"
 #include "util.hpp"
 
 class QObject;
@@ -17,11 +17,11 @@ class Screenshot : public QObject
 {
     Q_OBJECT
 public:
-    explicit Screenshot(qint8 screen_id = constants::DEFAULT_SCREEN,
-        qint16 screen_x = constants::DEFAULT_SCREEN_POS,
-        qint16 screen_y = constants::DEFAULT_SCREEN_POS,
-        qint16 screen_width = constants::DEFAULT_SCREEN_SIZE,
-        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
+    explicit Screenshot(qint8 screen_id      = constants::DEFAULT_SCREEN,
+                        qint16 screen_x      = constants::DEFAULT_SCREEN_POS,
+                        qint16 screen_y      = constants::DEFAULT_SCREEN_POS,
+                        qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
+                        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
 
     // Take a screenshot
     void take(int msec);
@@ -30,10 +30,10 @@ public:
     QImage getImage() const;
 
     void setScreen(qint8 screen_id,
-        qint16 screen_x = constants::DEFAULT_SCREEN_POS,
-        qint16 screen_y = constants::DEFAULT_SCREEN_POS,
-        qint16 screen_width = constants::DEFAULT_SCREEN_SIZE,
-        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
+                   qint16 screen_x      = constants::DEFAULT_SCREEN_POS,
+                   qint16 screen_y      = constants::DEFAULT_SCREEN_POS,
+                   qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
+                   qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     QList<QScreen*> getScreens() const;
 
 signals:
@@ -50,7 +50,7 @@ private:
     qint16 m_screen_y = constants::DEFAULT_SCREEN_POS;
 
     // will default to m_scren->geometry().height()/width()
-    qint16 m_screen_width = constants::DEFAULT_SCREEN_SIZE;
+    qint16 m_screen_width  = constants::DEFAULT_SCREEN_SIZE;
     qint16 m_screen_height = constants::DEFAULT_SCREEN_SIZE;
 
     QQueue<QImage>* m_queue;

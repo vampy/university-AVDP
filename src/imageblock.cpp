@@ -9,7 +9,7 @@ QImage Imageblock::getImage() const { return m_image; }
 
 bool Imageblock::operator==(const Imageblock& other)
 {
-    qreal mse = 0.0;
+    qreal mse        = 0.0;
     auto other_image = other.getImage();
 
     for (int x = 0; x < m_image.width(); x++)

@@ -7,11 +7,7 @@ Screenshot::Screenshot(qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16
 
 void Screenshot::take(int msec)
 {
-    QTimer::singleShot(msec,
-        [this]
-        {
-            this->take();
-        });
+    QTimer::singleShot(msec, [this] { this->take(); });
 }
 
 void Screenshot::take()
@@ -25,7 +21,7 @@ void Screenshot::take()
 
     // round up so that it is a multiple of block_width
     auto new_size = QSize(util::roundUp(m_image.width(), constants::BLOCK_WIDTH),
-        util::roundUp(m_image.height(), constants::BLOCK_WIDTH));
+                          util::roundUp(m_image.height(), constants::BLOCK_WIDTH));
 
     if (m_image.size() != new_size)
     {
@@ -62,9 +58,9 @@ void Screenshot::setScreen(qint8 screen_id, qint16 screen_x, qint16 screen_y, qi
     Q_ASSERT(m_screen);
 
     // set coordinates
-    m_screen_x = screen_x < 0 ? m_screen->geometry().x() : screen_x;
-    m_screen_y = screen_y < 0 ? m_screen->geometry().y() : screen_y;
-    m_screen_width = screen_width == 0 ? m_screen->geometry().width() : screen_width;
+    m_screen_x      = screen_x < 0 ? m_screen->geometry().x() : screen_x;
+    m_screen_y      = screen_y < 0 ? m_screen->geometry().y() : screen_y;
+    m_screen_width  = screen_width == 0 ? m_screen->geometry().width() : screen_width;
     m_screen_height = screen_height == 0 ? m_screen->geometry().height() : screen_height;
 
     qDebug() << "Screen id = " << screen_id << " | " << m_screen_width << "x" << m_screen_height << "at" << m_screen_x

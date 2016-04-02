@@ -1,10 +1,10 @@
 #ifndef SCREENSHOTGUI_HPP
 #define SCREENSHOTGUI_HPP
 
-#include <QWidget>
 #include <QCommandLineParser>
-#include "screenshot.hpp"
+#include <QWidget>
 #include "recorder.hpp"
+#include "screenshot.hpp"
 
 class QCheckBox;
 class QGridLayout;
