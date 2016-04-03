@@ -33,7 +33,7 @@ void Screenshot::take()
 
     if (debug_counter % static_cast<qint32>(constants::DEFAULT_FPS) == 0)
     {
-        qDebug() << "Screenshot::take" << debug_time.elapsed() << "ms";
+        qInfo() << "Screenshot::take" << debug_time.elapsed() << "ms";
     }
     debug_counter++;
 }
@@ -63,8 +63,8 @@ void Screenshot::setScreen(qint8 screen_id, qint16 screen_x, qint16 screen_y, qi
     m_screen_width  = screen_width == 0 ? m_screen->geometry().width() : screen_width;
     m_screen_height = screen_height == 0 ? m_screen->geometry().height() : screen_height;
 
-    qDebug() << "Screen id = " << screen_id << " | " << m_screen_width << "x" << m_screen_height << "at" << m_screen_x
-             << "x" << m_screen_y;
+    qInfo() << "Screen id = " << screen_id << " | " << m_screen_width << "x" << m_screen_height << "at" << m_screen_x
+            << "x" << m_screen_y;
 }
 
 QList<QScreen*> Screenshot::getScreens() const { return QGuiApplication::screens(); }

@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     const char* const OPTION_SCREEN_H = "screen-h";
     const char* const OPTION_FPS      = "fps";
     // const char* const OPTION_LIST_SCREENS = "list-screens";
-    Q_ASSERT(parser.addOptions(
+    auto temp = parser.addOptions(
         {// Show the gui or command line
          {{"g", OPTION_GUI}, "GUI mode"},
          {{"f", OPTION_FPS}, "Frames per second", "fps", QString::number(constants::DEFAULT_FPS)},
@@ -36,7 +36,8 @@ int main(int argc, char* argv[])
          {OPTION_SCREEN_X, "Screen X coordinate", "x", QString::number(constants::DEFAULT_SCREEN_POS)},
          {OPTION_SCREEN_Y, "Screen Y coordinate", "y", QString::number(constants::DEFAULT_SCREEN_POS)},
          {OPTION_SCREEN_W, "Screen width", "width", QString::number(constants::DEFAULT_SCREEN_SIZE)},
-         {OPTION_SCREEN_H, "Screen height", "height", QString::number(constants::DEFAULT_SCREEN_SIZE)}}));
+         {OPTION_SCREEN_H, "Screen height", "height", QString::number(constants::DEFAULT_SCREEN_SIZE)}});
+    Q_ASSERT(temp);
 
     // Process the actual command line arguments given by the user
     parser.process(app);
@@ -52,14 +53,14 @@ int main(int argc, char* argv[])
     if (parser.isSet(OPTION_GUI))
     {
         // gui mode
-        qDebug("GUI mode");
+        qInfo() << "GUI mode";
         gui = new GUI(fps, screen_id, screen_x, screen_y, screen_w, screen_h);
         gui->show();
     }
     else
     {
         // cli mode
-        qDebug("Console mode");
+        qInfo() << "Console mode";
         cli = new CLI(&app);
 
         // quit app when finished signal  received

@@ -28,14 +28,14 @@ QImage Recorder::getCurrentFrame() { return m_current_frame; }
 
 void Recorder::startRecording()
 {
-    qDebug() << "StartRecording!";
+    qInfo() << "StartRecording!";
     m_timer->start();
     m_workerTimer->start();
 }
 
 void Recorder::stopRecording()
 {
-    qDebug() << "StopRecording!";
+    qInfo() << "StopRecording!";
     m_timer->stop();
     m_workerTimer->stop();
 }
@@ -124,11 +124,11 @@ void Recorder::compareFrames()
 
     if (m_current_frame_id % static_cast<qint32>(constants::DEFAULT_FPS) == 0)
     {
-        qDebug() << "We have " << debug_counter << "/"
-                 << (m_current_frame.width() / constants::BLOCK_WIDTH)
-                        * (m_current_frame.height() / constants::BLOCK_WIDTH)
-                 << "equal blocks in frame" << m_current_frame_id;
-        qDebug() << "Recorder::compareFrames" << debug_time.elapsed() << "ms";
+        qInfo() << "We have " << debug_counter << "/"
+                << (m_current_frame.width() / constants::BLOCK_WIDTH)
+                       * (m_current_frame.height() / constants::BLOCK_WIDTH)
+                << "equal blocks in frame" << m_current_frame_id;
+        qInfo() << "Recorder::compareFrames" << debug_time.elapsed() << "ms";
     }
 }
 
