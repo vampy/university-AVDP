@@ -2,6 +2,7 @@
 #define RECORDER_HPP
 
 #include <QQueue>
+#include <QThread>
 #include "constants.hpp"
 #include "imageblock.hpp"
 #include "screenshot.hpp"
@@ -21,24 +22,27 @@ public:
                       qint16 screen_y      = constants::DEFAULT_SCREEN_POS,
                       qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                       qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
+    ~Recorder();
     QImage getCurrentFrame();
 
     void setDebug(bool debug);
-
-signals:
-    void onFrameReady();
-
-public slots:
     void startRecording();
     void stopRecording();
 
-private slots:
+signals:
+    void onFrameReady();
     void takeScreenshot();
+
+private slots:
+    void onScreenshot();
+    void onTimerTimeout();
     void compareFrames();
 
 private:
     QQueue<QImage>* m_queue;
     Screenshot* m_screenshot;
+    QThread m_thread_screenshot;
+
     QTimer* m_timer;
     QTimer* m_workerTimer;
 

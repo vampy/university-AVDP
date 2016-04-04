@@ -20,8 +20,28 @@ Recorder::Recorder(QObject* parent,
     m_workerTimer->setInterval(interval);
     m_workerTimer->setSingleShot(false);
 
-    connect(m_timer, &QTimer::timeout, this, &Recorder::takeScreenshot);
+    connect(m_timer, &QTimer::timeout, this, &Recorder::onTimerTimeout);
     connect(m_workerTimer, &QTimer::timeout, this, &Recorder::compareFrames);
+
+    // Move to thread
+    m_screenshot->moveToThread(&m_thread_screenshot);
+    connect(&m_thread_screenshot, &QThread::finished, m_screenshot, &QObject::deleteLater);
+
+    // take screenshot signal
+    typedef void (Screenshot::*ScreenshotVoidTake)(void);
+    connect(this, &Recorder::takeScreenshot, m_screenshot, static_cast<ScreenshotVoidTake>(&Screenshot::take));
+
+    // receive screenshot
+    connect(m_screenshot, &Screenshot::onScreenshot, this, &Recorder::onScreenshot);
+
+    // start
+    m_thread_screenshot.start();
+}
+
+Recorder::~Recorder()
+{
+    m_thread_screenshot.quit();
+    m_thread_screenshot.wait();
 }
 
 QImage Recorder::getCurrentFrame() { return m_current_frame; }
@@ -40,11 +60,9 @@ void Recorder::stopRecording()
     m_workerTimer->stop();
 }
 
-void Recorder::takeScreenshot()
-{
-    m_screenshot->take();
-    m_queue->enqueue(m_screenshot->getImage());
-}
+void Recorder::onScreenshot() { m_queue->enqueue(m_screenshot->getImage()); }
+
+void Recorder::onTimerTimeout() { emit takeScreenshot(); }
 
 void Recorder::compareFrames()
 {

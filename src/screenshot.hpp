@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QGuiApplication>
+#include <QMutex>
 #include <QPixmap>
 #include <QScreen>
 #include <QTime>
@@ -23,10 +24,6 @@ public:
                         qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                         qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
 
-    // Take a screenshot
-    void take(int msec);
-    void take();
-
     QImage getImage() const;
 
     void setScreen(qint8 screen_id,
@@ -35,6 +32,11 @@ public:
                    qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                    qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     QList<QScreen*> getScreens() const;
+
+public slots:
+    // Take a screenshot
+    void take(int msec);
+    void take();
 
 signals:
     void onScreenshot();
@@ -52,8 +54,6 @@ private:
     // will default to m_scren->geometry().height()/width()
     qint16 m_screen_width  = constants::DEFAULT_SCREEN_SIZE;
     qint16 m_screen_height = constants::DEFAULT_SCREEN_SIZE;
-
-    QQueue<QImage>* m_queue;
 };
 
 #endif // SCREENSHOT_HPP
