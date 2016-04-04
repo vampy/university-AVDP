@@ -51,7 +51,6 @@ private:
     quint32 m_current_frame_id = 0;
 
     qreal m_fps;
-
     bool m_debug = false;
 };
 

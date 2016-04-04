@@ -48,6 +48,7 @@ QImage Recorder::getCurrentFrame() { return m_current_frame; }
 void Recorder::startRecording()
 {
     qInfo() << "StartRecording!";
+    m_screenshot->statsReset();
     m_timer->start();
     m_workerTimer->start();
 }
@@ -57,6 +58,7 @@ void Recorder::stopRecording()
     qInfo() << "StopRecording!";
     m_timer->stop();
     m_workerTimer->stop();
+    m_screenshot->statsDisplay();
 }
 
 void Recorder::onScreenshot() { m_queue->enqueue(m_screenshot->getImage()); }

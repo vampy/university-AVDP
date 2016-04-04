@@ -22,7 +22,6 @@ public:
                         qint16 screen_y      = constants::DEFAULT_SCREEN_POS,
                         qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                         qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
-
     QImage getImage() const;
 
     void setScreen(qint8 screen_id,
@@ -31,6 +30,9 @@ public:
                    qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                    qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     QList<QScreen*> getScreens() const;
+
+    void statsDisplay();
+    void statsReset();
 
 public slots:
     // Take a screenshot
@@ -53,6 +55,15 @@ private:
     // will default to m_scren->geometry().height()/width()
     qint16 m_screen_width  = constants::DEFAULT_SCREEN_SIZE;
     qint16 m_screen_height = constants::DEFAULT_SCREEN_SIZE;
+
+    // Only used if the image is not a multiple of the block width
+    qint16 m_new_screen_width;
+    qint16 m_new_screen_height;
+    bool m_is_multiple = true;
+
+    // For stats only
+    quint32 m_stats_take_nr    = 0;
+    quint32 m_stats_take_total = 0;
 };
 
 #endif // SCREENSHOT_HPP
