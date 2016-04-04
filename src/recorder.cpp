@@ -17,7 +17,7 @@ Recorder::Recorder(QObject* parent,
     int interval = 1000 / m_fps;
     m_timer->setInterval(interval);
     m_timer->setSingleShot(false);
-    m_workerTimer->setInterval(interval);
+    m_workerTimer->setInterval(10);
     m_workerTimer->setSingleShot(false);
 
     connect(m_timer, &QTimer::timeout, this, &Recorder::onTimerTimeout);

@@ -44,10 +44,10 @@ void Screenshot::setScreen(qint8 screen_id, qint16 screen_x, qint16 screen_y, qi
     Q_ASSERT(m_screen);
 
     // set original coordinates and sizes
-    m_screen_x      = screen_x < 0 ? m_screen->geometry().x() : screen_x;
-    m_screen_y      = screen_y < 0 ? m_screen->geometry().y() : screen_y;
-    m_screen_width  = screen_width == 0 ? m_screen->geometry().width() : screen_width;
-    m_screen_height = screen_height == 0 ? m_screen->geometry().height() : screen_height;
+    m_screen_x      = screen_x <= constants::DEFAULT_SCREEN_POS ? m_screen->geometry().x() : screen_x;
+    m_screen_y      = screen_y <= constants::DEFAULT_SCREEN_POS ? m_screen->geometry().y() : screen_y;
+    m_screen_width  = screen_width == constants::DEFAULT_SCREEN_SIZE ? m_screen->geometry().width() : screen_width;
+    m_screen_height = screen_height == constants::DEFAULT_SCREEN_SIZE ? m_screen->geometry().height() : screen_height;
 
     // round up so that it is a multiple of block_width
     auto new_size = QSize(util::roundUp(m_screen_width, constants::BLOCK_WIDTH),
@@ -62,7 +62,7 @@ void Screenshot::setScreen(qint8 screen_id, qint16 screen_x, qint16 screen_y, qi
 
     qInfo() << "Screen id = " << screen_id << " | " << m_screen_width << "x" << m_screen_height << "at" << m_screen_x
             << "x" << m_screen_y;
-    qInfo() << "Actual screen size after rouding up to multiple of block" << constants::BLOCK_WIDTH << "is"
+    qInfo() << "Actual screen size after rounding up to multiple of block" << constants::BLOCK_WIDTH << "is"
             << m_new_screen_width << "x" << m_new_screen_height;
 }
 
