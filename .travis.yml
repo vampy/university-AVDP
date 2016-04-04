@@ -13,8 +13,6 @@ matrix:
 
 env:
   matrix:
-    - QT_BASE="54" BUILD_TYPE="debug"
-    - QT_BASE="54" BUILD_TYPE="release"
     - QT_BASE="55" BUILD_TYPE="debug"
     - QT_BASE="55" BUILD_TYPE="release"
     - QT_BASE="56" BUILD_TYPE="debug"
@@ -22,7 +20,6 @@ env:
 
 # Minimum Qt version is 5.4 (https://launchpad.net/~beineri)
 before_install:
-  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt542-trusty; fi
   - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty; fi
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository -y ppa:beineri/opt-qt56-trusty; fi
   - sudo apt-get update -qq

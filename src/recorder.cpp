@@ -23,7 +23,7 @@ Recorder::Recorder(QObject* parent,
     connect(m_timer, &QTimer::timeout, this, &Recorder::onTimerTimeout);
     connect(m_workerTimer, &QTimer::timeout, this, &Recorder::compareFrames);
 
-    // Move to thread
+    // Connect to the thread
     m_screenshot->moveToThread(&m_thread_screenshot);
     connect(&m_thread_screenshot, &QThread::finished, m_screenshot, &QObject::deleteLater);
 
@@ -34,7 +34,6 @@ Recorder::Recorder(QObject* parent,
     // receive screenshot
     connect(m_screenshot, &Screenshot::onScreenshot, this, &Recorder::onScreenshot);
 
-    // start
     m_thread_screenshot.start();
 }
 

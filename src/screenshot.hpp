@@ -3,7 +3,6 @@
 
 #include <QDebug>
 #include <QGuiApplication>
-#include <QMutex>
 #include <QPixmap>
 #include <QScreen>
 #include <QTime>

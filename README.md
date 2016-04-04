@@ -4,7 +4,7 @@
 Project for audio-video data processing http://www.cs.ubbcluj.ro/~forest/pdav/
 
 # Build
-You need to have at least `Qt 5.4` installed and configured.
+You need to have at least `Qt 5.5` installed and configured.
 
 ## Qt Creator
 1. Open the [avdp.pro](avdp.pro) file with Qt Creator.
