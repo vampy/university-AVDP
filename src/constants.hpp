@@ -12,7 +12,7 @@ const quint8 BLOCK_WIDTH          = 16;
 
 const qint8 DEFAULT_SCREEN = 0;
 
-// se screenshot class for more details about these defaults
+// see screenshot class for more details about these defaults
 const qint16 DEFAULT_SCREEN_POS  = -1;
 const qint16 DEFAULT_SCREEN_SIZE = 0;
 

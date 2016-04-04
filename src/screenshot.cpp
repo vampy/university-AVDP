@@ -31,7 +31,7 @@ void Screenshot::setScreen(qint8 screen_id, qint16 screen_x, qint16 screen_y, qi
     // https://stackoverflow.com/questions/29988952/how-can-i-take-a-print-screen-using-qt-c-with-various-monitors
     // set screen
     auto screens = getScreens();
-    if (screen_id < 0)
+    if (screen_id < constants::DEFAULT_SCREEN)
     {
         m_screen = QGuiApplication::primaryScreen();
     }
@@ -66,7 +66,7 @@ void Screenshot::setScreen(qint8 screen_id, qint16 screen_x, qint16 screen_y, qi
             << m_new_screen_width << "x" << m_new_screen_height;
 }
 
-QList<QScreen*> Screenshot::getScreens() const { return QGuiApplication::screens(); }
+const QList<QScreen*> Screenshot::getScreens() const { return QGuiApplication::screens(); }
 
 void Screenshot::statsDisplay()
 {

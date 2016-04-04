@@ -29,7 +29,7 @@ public:
                    qint16 screen_y      = constants::DEFAULT_SCREEN_POS,
                    qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                    qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
-    QList<QScreen*> getScreens() const;
+    const QList<QScreen*> getScreens() const;
 
     void statsDisplay();
     void statsReset();

@@ -23,11 +23,11 @@ public:
                       qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                       qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     ~Recorder();
-    QImage getCurrentFrame();
+    QImage getCurrentFrame() const;
 
     void setDebug(bool debug);
-    void startRecording();
-    void stopRecording();
+    void startRecording() const;
+    void stopRecording() const;
 
 signals:
     void onFrameReady();

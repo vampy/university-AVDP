@@ -43,9 +43,9 @@ Recorder::~Recorder()
     m_thread_screenshot.wait();
 }
 
-QImage Recorder::getCurrentFrame() { return m_current_frame; }
+QImage Recorder::getCurrentFrame() const { return m_current_frame; }
 
-void Recorder::startRecording()
+void Recorder::startRecording() const
 {
     qInfo() << "StartRecording!";
     m_screenshot->statsReset();
@@ -53,7 +53,7 @@ void Recorder::startRecording()
     m_workerTimer->start();
 }
 
-void Recorder::stopRecording()
+void Recorder::stopRecording() const
 {
     qInfo() << "StopRecording!";
     m_timer->stop();
