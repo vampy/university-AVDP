@@ -31,6 +31,9 @@ build/
 
 *.autosave
 
+# arghhh syncthing
+*.sync-conflict*
+
 #QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
