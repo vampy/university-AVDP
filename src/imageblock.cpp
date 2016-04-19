@@ -1,7 +1,7 @@
 #include "imageblock.hpp"
 
-Imageblock::Imageblock(int frameId, QPoint position, QImage image)
-    : m_frameId(frameId), m_position(position), m_image(image)
+Imageblock::Imageblock(quint32 frame_id, QPoint position, QImage image)
+    : m_frame_id(frame_id), m_position(position), m_image(image)
 {
 }
 

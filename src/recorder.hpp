@@ -52,6 +52,11 @@ private:
 
     qreal m_fps;
     bool m_debug = false;
+
+//    class CompareFrames : public QObject
+//    {
+//        Q_OBJECT
+//    };
 };
 
 #endif // RECORDER_HPP

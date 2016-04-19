@@ -9,14 +9,14 @@ class Imageblock : public QObject
 {
     Q_OBJECT
 public:
-    explicit Imageblock(int frameId, QPoint position, QImage image);
+    explicit Imageblock(quint32 frame_id, QPoint position, QImage image);
     QImage getImage() const;
 
     bool operator==(const Imageblock& other);
     bool operator!=(const Imageblock& other);
 
 private:
-    int m_frameId;
+    quint32 m_frame_id;
     QPoint m_position;
     QImage m_image;
 };
