@@ -1,6 +1,6 @@
 #include "imageblock.hpp"
 
-Imageblock::Imageblock(quint32 frame_id, QPoint position, QImage image)
+Imageblock::Imageblock(quint32 frame_id, const QPoint& position, const QImage& image)
     : m_frame_id(frame_id), m_position(position), m_image(image)
 {
 }
