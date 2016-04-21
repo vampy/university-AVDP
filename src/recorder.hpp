@@ -3,6 +3,7 @@
 
 #include <QQueue>
 #include <QThread>
+#include "compareframes.hpp"
 #include "constants.hpp"
 #include "imageblock.hpp"
 #include "screenshot.hpp"
@@ -23,7 +24,7 @@ public:
                       qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
                       qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     ~Recorder();
-    QImage getCurrentFrame() const;
+    QImage getCurrentFrame();
 
     void setDebug(bool debug);
     void startRecording() const;
@@ -36,27 +37,22 @@ signals:
 private slots:
     void onScreenshot();
     void onTimerTimeout();
-    void compareFrames();
+    void onCompare();
 
 private:
-    QQueue<QImage>* m_queue;
     Screenshot* m_screenshot;
-    QThread m_thread_screenshot;
+    CompareFrames* m_compare;
 
+    QThread* m_thread_screenshot;
+    QThread* m_thread_compare;
+
+    // the timer to take screenshots
     QTimer* m_timer;
-    QTimer* m_workerTimer;
-
-    QImage m_current_frame;          // used to display
-    QImage m_original_current_frame; // used internally to compare with the next frame
-    quint32 m_current_frame_id = 0;
-
     qreal m_fps;
-    bool m_debug = false;
 
-//    class CompareFrames : public QObject
-//    {
-//        Q_OBJECT
-//    };
+    QTime m_time_screenshot; // timer to measure screenshot time
+    qint32 m_last_time_screenshot = 0;
+    quint32 m_count_screenshots   = 0;
 };
 
 #endif // RECORDER_HPP

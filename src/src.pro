@@ -8,14 +8,16 @@ HEADERS = gui.hpp \
     recorder.hpp \
     imageblock.hpp \
     util.hpp \
-    constants.hpp
+    constants.hpp \
+    compareframes.hpp
 
 SOURCES = main.cpp \
     gui.cpp \
     cli.cpp \
     screenshot.cpp \
     recorder.cpp \
-    imageblock.cpp
+    imageblock.cpp \
+    compareframes.cpp
 
 # See https://doc.qt.io/qt-5/qmake-variable-reference.html#config
 CONFIG += qt c++11 warn_on debug_and_release

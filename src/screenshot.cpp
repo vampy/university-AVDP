@@ -1,9 +1,6 @@
 #include "screenshot.hpp"
 
-Screenshot::Screenshot(qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 screen_width, qint16 screen_height)
-{
-    setScreen(screen_id, screen_x, screen_y, screen_width, screen_height);
-}
+Screenshot::Screenshot(QObject* parent) : QObject(parent) {}
 
 void Screenshot::take(int msec)
 {

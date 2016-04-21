@@ -17,11 +17,7 @@ class Screenshot : public QObject
 {
     Q_OBJECT
 public:
-    explicit Screenshot(qint8 screen_id      = constants::DEFAULT_SCREEN,
-                        qint16 screen_x      = constants::DEFAULT_SCREEN_POS,
-                        qint16 screen_y      = constants::DEFAULT_SCREEN_POS,
-                        qint16 screen_width  = constants::DEFAULT_SCREEN_SIZE,
-                        qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
+    explicit Screenshot(QObject* parent = nullptr);
     QImage getImage() const;
 
     void setScreen(qint8 screen_id,
@@ -56,7 +52,8 @@ private:
     qint16 m_screen_width  = constants::DEFAULT_SCREEN_SIZE;
     qint16 m_screen_height = constants::DEFAULT_SCREEN_SIZE;
 
-    // Only used if the image is not a multiple of the block width
+    // Only different than the screen_width and screen_height above
+    // if the image is not a multiple of the block width. They are used to grab the window.
     qint16 m_new_screen_width;
     qint16 m_new_screen_height;
     bool m_is_multiple = true;

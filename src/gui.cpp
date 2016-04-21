@@ -79,6 +79,9 @@ void GUI::updateGuiAfterNewFrame() { updateFrameLabel(); }
 void GUI::updateFrameLabel()
 {
     auto image = m_recorder->getCurrentFrame();
-    m_screenshot_label->setPixmap(
-        QPixmap::fromImage(image).scaled(m_screenshot_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    if (!image.isNull())
+    {
+        m_screenshot_label->setPixmap(QPixmap::fromImage(image).scaled(
+            m_screenshot_label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    }
 }
