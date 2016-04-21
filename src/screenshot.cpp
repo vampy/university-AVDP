@@ -15,7 +15,8 @@ void Screenshot::take()
     // Maybe this will fail in some enviroments? https://doc.qt.io/qt-5/qscreen.html#grabWindow
     m_image = m_screen->grabWindow(0, m_screen_x, m_screen_y, m_new_screen_width, m_new_screen_height).toImage();
     Q_ASSERT(!m_image.isNull());
-    emit onScreenshot();
+    Q_ASSERT(QImage::Format_RGB32 == m_image.format());
+    emit onScreenshot(m_image);
 
     m_stats_take_total += debug_time.elapsed();
     m_stats_take_nr++;

@@ -3,7 +3,8 @@
 #include "gui.hpp"
 
 GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 screen_w, qint16 screen_h)
-    : m_recorder(new Recorder(this, fps, screen_id, screen_x, screen_y, screen_w, screen_h)),
+    : m_recorder(new Recorder(nullptr, fps, screen_id, screen_x, screen_y, screen_w, screen_h)),
+      m_thread_recorder(new QThread(this)),
       m_screenshot_label(new QLabel(this))
 {
     m_screenshot_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -39,6 +40,13 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
     connect(toggle_debug_mode_button, &QPushButton::clicked, this, &GUI::toggleDebugModeButtonClicked);
     connect(quit_screenshot_button, &QPushButton::clicked, this, &QWidget::close);
 
+    // move thread
+    m_recorder->moveToThread(m_thread_recorder);
+    connect(m_thread_recorder, &QThread::finished, m_recorder, &QObject::deleteLater);
+    connect(this, &GUI::startRecording, m_recorder, &Recorder::startRecording);
+    connect(this, &GUI::stopRecording, m_recorder, &Recorder::stopRecording);
+    connect(this, &GUI::setDebug, m_recorder, &Recorder::setDebug);
+
     // new screenshot was taken signal
     connect(m_recorder, &Recorder::onFrameReady, this, &GUI::newFrame);
 
@@ -51,6 +59,8 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
 
     setWindowTitle(constants::APP_NAME);
     resize(300, 200);
+
+    m_thread_recorder->start();
 }
 
 void GUI::resizeEvent(QResizeEvent* /* event */) { updateFrameLabel(); }
@@ -59,7 +69,7 @@ void GUI::toggleDebugModeButtonClicked()
 {
     static bool toggle = false;
     toggle             = !toggle;
-    m_recorder->setDebug(toggle);
+    emit setDebug(toggle);
 }
 
 void GUI::startRecordingClicked()
@@ -67,10 +77,10 @@ void GUI::startRecordingClicked()
     if (m_hide_window_checkbox->isChecked())
         showMinimized();
 
-    m_recorder->startRecording();
+    emit startRecording();
 }
 
-void GUI::stopRecordingClicked() { m_recorder->stopRecording(); }
+void GUI::stopRecordingClicked() { emit stopRecording(); }
 
 void GUI::newFrame() { updateGuiAfterNewFrame(); }
 

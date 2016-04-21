@@ -4,7 +4,6 @@
 #include <QQueue>
 #include <QThread>
 #include "compareframes.hpp"
-#include "constants.hpp"
 #include "imageblock.hpp"
 #include "screenshot.hpp"
 
@@ -26,16 +25,18 @@ public:
     ~Recorder();
     QImage getCurrentFrame();
 
-    void setDebug(bool debug);
-    void startRecording() const;
-    void stopRecording() const;
-
 signals:
     void onFrameReady();
     void takeScreenshot();
+    void compareFrame(QImage);
+
+public slots:
+    void startRecording() const;
+    void stopRecording() const;
+    void setDebug(bool);
 
 private slots:
-    void onScreenshot();
+    void onScreenshot(const QImage&);
     void onTimerTimeout();
     void onCompare();
 
@@ -51,7 +52,7 @@ private:
     qreal m_fps;
 
     QTime m_time_screenshot; // timer to measure screenshot time
-    qint32 m_last_time_screenshot = 0;
+    qint64 m_last_time_screenshot = 0;
     quint32 m_count_screenshots   = 0;
 };
 

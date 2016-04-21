@@ -2,7 +2,6 @@
 #define IMAGEBLOCK_HPP
 
 #include <QImage>
-#include "constants.hpp"
 #include "util.hpp"
 
 class Imageblock : public QObject

@@ -29,7 +29,6 @@ void CompareFrames::addToProcessQueue(QImage image)
     m_mutex_process_queue.lock();
     m_queue_process->enqueue(image);
     m_mutex_process_queue.unlock();
-    doWork();
 }
 
 void CompareFrames::doWork()
@@ -97,28 +96,15 @@ void CompareFrames::doWork()
                 if (!m_debug)
                     continue;
 
-                for (int i = 0; i < constants::BLOCK_WIDTH; i++)
-                {
-                    for (int j = 0; j < constants::BLOCK_WIDTH; j++)
-                    {
-                        m_current_frame.setPixel(x + i, y + j, qRgb(255, 0, 0));
-                    }
-                }
+                util::copyBlockColor(m_current_frame, qRgb(255, 0, 0), x, y);
             }
             else
             {
                 // copy the blocks that are not equal from next frame to the current frame
-                for (int i = 0; i < constants::BLOCK_WIDTH; i++)
+                util::copyBlock(m_current_frame, next_frame, x, y);
+                if (m_debug)
                 {
-                    for (int j = 0; j < constants::BLOCK_WIDTH; j++)
-                    {
-                        if (m_debug)
-                        {
-                            m_original_current_frame.setPixel(x + i, y + j, next_frame.pixel(x + i, y + j));
-                        }
-
-                        m_current_frame.setPixel(x + i, y + j, next_frame.pixel(x + i, y + j));
-                    }
+                    util::copyBlock(m_original_current_frame, next_frame, x, y);
                 }
             }
         }
@@ -137,4 +123,10 @@ void CompareFrames::doWork()
                 << "equal blocks in frame" << m_current_frame_id;
         qInfo() << "Recorder::compareFrames" << debug_time.elapsed() << "ms";
     }
+}
+
+void CompareFrames::compareFrame(const QImage& image)
+{
+    addToProcessQueue(image);
+    doWork();
 }

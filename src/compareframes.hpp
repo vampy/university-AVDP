@@ -3,9 +3,9 @@
 
 #include <QDebug>
 #include <QMutex>
+#include <QPainter>
 #include <QQueue>
 #include <QTime>
-#include "constants.hpp"
 #include "imageblock.hpp"
 
 class QObject;
@@ -21,11 +21,13 @@ public:
     QImage getCurrentFrame();
 
     void addToProcessQueue(QImage image);
+    void doWork();
 
 signals:
     void onCompare();
+
 public slots:
-    void doWork();
+    void compareFrame(const QImage&);
 
 private:
     // m_queue_process images will added to m_queue_display after processing.

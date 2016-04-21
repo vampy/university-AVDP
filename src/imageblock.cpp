@@ -7,19 +7,29 @@ Imageblock::Imageblock(quint32 frame_id, QPoint position, QImage image)
 
 QImage Imageblock::getImage() const { return m_image; }
 
+// Calculate luma https://en.wikipedia.org/wiki/Luma_%28video%29
+#define YCOMPONENT(_color) 0.299 * ((_color >> 16) & 0xff) + 0.587 * ((_color >> 8) & 0xff) + 0.114 * (_color & 0xff)
+
 bool Imageblock::operator==(const Imageblock& other)
 {
-    qreal mse        = 0.0;
-    auto other_image = other.getImage();
+    qreal mse;
+    auto other_image  = other.getImage();
+    auto current_qrgb = reinterpret_cast<QRgb*>(const_cast<uchar*>(m_image.constBits()));
+    auto other_qrgb   = reinterpret_cast<QRgb*>(const_cast<uchar*>(other_image.constBits()));
+    auto bytes_line   = m_image.bytesPerLine() / sizeof(QRgb);
+    auto width        = m_image.width();
+    auto height       = m_image.height();
 
-    for (int x = 0; x < m_image.width(); x++)
+    for (int x = 0; x < width; x++)
     {
-        for (int y = 0; y < m_image.height(); y++)
+        for (int y = 0; y < height; y++)
         {
-            mse += pow(util::yComponent(m_image.pixel(x, y)) - util::yComponent(other_image.pixel(x, y)), 2.0);
+            auto index = x + y * bytes_line;
+            auto value = YCOMPONENT(current_qrgb[index]) - YCOMPONENT(other_qrgb[index]);
+            mse += value * value;
         }
     }
-    mse /= (m_image.width() * m_image.height());
+    mse /= (width * height);
 
     return mse < constants::DEFAULT_IMAGE_DIFF_THRESHOLD;
 }

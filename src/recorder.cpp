@@ -8,8 +8,8 @@ Recorder::Recorder(QObject* parent,
                    qint16 screen_width,
                    qint16 screen_height)
     : QObject(parent),
-      m_screenshot(new Screenshot()),
-      m_compare(new CompareFrames()),
+      m_screenshot(new Screenshot),
+      m_compare(new CompareFrames),
       m_thread_screenshot(new QThread(this)),
       m_thread_compare(new QThread(this)),
       m_timer(new QTimer(this)),
@@ -27,12 +27,15 @@ Recorder::Recorder(QObject* parent,
     connect(m_thread_compare, &QThread::finished, m_compare, &QObject::deleteLater);
     connect(m_thread_screenshot, &QThread::finished, m_screenshot, &QObject::deleteLater);
 
-    // take screenshot signal, TODO direct call to thread?
+    // take screenshot
     typedef void (Screenshot::*ScreenshotVoidTake)(void);
     connect(this, &Recorder::takeScreenshot, m_screenshot, static_cast<ScreenshotVoidTake>(&Screenshot::take));
 
     // receive screenshot
     connect(m_screenshot, &Screenshot::onScreenshot, this, &Recorder::onScreenshot);
+
+    // compare frame
+    connect(this, &Recorder::compareFrame, m_compare, &CompareFrames::compareFrame);
 
     // receive compare
     connect(m_compare, &CompareFrames::onCompare, this, &Recorder::onCompare);
@@ -65,19 +68,21 @@ void Recorder::stopRecording() const
     m_screenshot->statsDisplay();
 }
 
-void Recorder::onScreenshot()
+void Recorder::onScreenshot(const QImage& image)
 {
     static qint32 default_fps = static_cast<qint32>(constants::DEFAULT_FPS);
+    auto elapsed_time         = m_time_screenshot.elapsed();
+    auto current_time         = QDateTime::currentMSecsSinceEpoch();
 
-    qint32 current_time = m_time_screenshot.elapsed();
     if (m_count_screenshots % default_fps == 0)
     {
-        qInfo() << "Take screenshot: " << current_time - m_last_time_screenshot;
+        qInfo() << "Recorder: take screenshot = " << elapsed_time
+                << ", difference = " << current_time - m_last_time_screenshot;
     }
-    m_last_time_screenshot = current_time;
 
+    m_last_time_screenshot = current_time;
     m_count_screenshots++;
-    m_compare->addToProcessQueue(m_screenshot->getImage());
+    emit compareFrame(image);
 }
 
 void Recorder::onTimerTimeout()

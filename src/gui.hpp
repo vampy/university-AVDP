@@ -26,6 +26,11 @@ public:
 protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
 
+signals:
+    void startRecording() const;
+    void stopRecording() const;
+    void setDebug(bool);
+
 private slots:
     void toggleDebugModeButtonClicked();
 
@@ -39,6 +44,7 @@ private:
     void updateFrameLabel();
 
     Recorder* m_recorder;
+    QThread* m_thread_recorder;
 
     // Display frames here
     QLabel* m_screenshot_label;

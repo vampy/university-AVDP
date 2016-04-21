@@ -32,11 +32,11 @@ public:
 
 public slots:
     // Take a screenshot
-    void take(int msec);
+    void take(int);
     void take();
 
 signals:
-    void onScreenshot();
+    void onScreenshot(const QImage&);
 
 private:
     QImage m_image;
