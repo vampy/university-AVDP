@@ -29,7 +29,7 @@ protected:
 signals:
     void startRecording() const;
     void stopRecording() const;
-    void setDebug(bool);
+    void setDebug(bool) const;
 
 private slots:
     void toggleDebugModeButtonClicked();

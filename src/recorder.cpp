@@ -37,6 +37,7 @@ Recorder::Recorder(QObject* parent,
 
     // compare frame
     connect(this, &Recorder::compareFrame, m_compare, &CompareFrames::compareFrame);
+    connect(this, &Recorder::setDebugCompare, m_compare, &CompareFrames::setDebug);
 
     // receive compare
     connect(m_compare, &CompareFrames::onCompare, this, &Recorder::onCompare);
@@ -108,4 +109,4 @@ void Recorder::onCompare(const QImage& image)
     emit onFrameReady();
 }
 
-void Recorder::setDebug(bool debug) { m_compare->setDebug(debug); }
+void Recorder::setDebug(bool debug) { emit setDebugCompare(debug); }

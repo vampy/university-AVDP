@@ -15,8 +15,6 @@ class CompareFrames : public QObject
     Q_OBJECT
 public:
     explicit CompareFrames(QObject* parent = nullptr);
-
-    void setDebug(bool debug);
     void doWork();
 
 signals:
@@ -25,6 +23,7 @@ signals:
 
 public slots:
     void compareFrame(const QImage&);
+    void setDebug(bool);
 
 private:
     QQueue<QImage>* m_queue_process; // used for processing in doWork

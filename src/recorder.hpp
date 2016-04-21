@@ -35,6 +35,8 @@ signals:
     // used by compare frames
     void compareFrame(const QImage&);
 
+    void setDebugCompare(bool);
+
 public slots:
     void startRecording() const;
     void stopRecording() const;

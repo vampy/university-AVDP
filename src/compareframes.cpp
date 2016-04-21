@@ -4,6 +4,7 @@ CompareFrames::CompareFrames(QObject* parent) : QObject(parent), m_queue_process
 
 void CompareFrames::setDebug(bool debug)
 {
+    qInfo() << "Debug set to " << debug;
     m_debug = debug;
 
     // prevent corruption
