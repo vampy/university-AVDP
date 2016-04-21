@@ -33,13 +33,11 @@ signals:
 
 private slots:
     void toggleDebugModeButtonClicked();
-
     void startRecordingClicked();
     void stopRecordingClicked();
-    void newFrame();
+    void onFrameReady();
 
 private:
-    void updateGuiAfterNewFrame();
     // this one actually updates the screenshot label
     void updateFrameLabel();
 

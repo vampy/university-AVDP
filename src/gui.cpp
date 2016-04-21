@@ -48,7 +48,7 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
     connect(this, &GUI::setDebug, m_recorder, &Recorder::setDebug);
 
     // new screenshot was taken signal
-    connect(m_recorder, &Recorder::onFrameReady, this, &GUI::newFrame);
+    connect(m_recorder, &Recorder::onFrameReady, this, &GUI::onFrameReady);
 
     buttons_layout->addWidget(start_recording_button);
     buttons_layout->addWidget(stop_recording_button);
@@ -82,9 +82,7 @@ void GUI::startRecordingClicked()
 
 void GUI::stopRecordingClicked() { emit stopRecording(); }
 
-void GUI::newFrame() { updateGuiAfterNewFrame(); }
-
-void GUI::updateGuiAfterNewFrame() { updateFrameLabel(); }
+void GUI::onFrameReady() { updateFrameLabel(); }
 
 void GUI::updateFrameLabel()
 {

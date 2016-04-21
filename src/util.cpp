@@ -10,7 +10,11 @@ void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int st
     auto dst_bits   = const_cast<uchar*>(dst_image.constBits());
     auto bytes_line = dst_image.bytesPerLine();
     auto block_bits = const_cast<uchar*>(block.constBits());
-    Q_ASSERT(dst_image.bytesPerLine() == block.bytesPerLine());
+    if (dst_image.bytesPerLine() != block.bytesPerLine())
+    {
+        qWarning() << "util::copyBlock: dst_image.bytesPerLine() == block.bytesPerLine()";
+        return;
+    }
 
     //    auto dst_pos = dst_bits + start_x;
     //    auto src_pos = block_bits + start_x;

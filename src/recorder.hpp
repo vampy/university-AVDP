@@ -26,9 +26,14 @@ public:
     QImage getCurrentFrame();
 
 signals:
+    // used by GUI
     void onFrameReady();
+
+    // used by screenshot
     void takeScreenshot();
-    void compareFrame(QImage);
+
+    // used by compare frames
+    void compareFrame(const QImage&);
 
 public slots:
     void startRecording() const;
@@ -38,9 +43,12 @@ public slots:
 private slots:
     void onScreenshot(const QImage&);
     void onTimerTimeout();
-    void onCompare();
+    void onCompare(const QImage&);
 
 private:
+    QQueue<QImage>* m_queue_display; // used for displaying
+    QMutex m_mutex_display_queue;
+
     Screenshot* m_screenshot;
     CompareFrames* m_compare;
 

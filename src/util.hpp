@@ -16,12 +16,6 @@ inline int roundUp(int numToRound, int multiple)
     return remainder == 0 ? numToRound : (numToRound + multiple - remainder);
 }
 
-// used the definitions qRed and qGreen here, I know
-inline double yComponent(QRgb color)
-{
-    return 0.299 * ((color >> 16) & 0xff) + 0.587 * ((color >> 8) & 0xff) + 0.114 * (color & 0xff);
-}
-
 inline qint32 toInt32(const QString& string)
 {
     bool ok;

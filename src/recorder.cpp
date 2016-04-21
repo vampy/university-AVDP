@@ -8,6 +8,7 @@ Recorder::Recorder(QObject* parent,
                    qint16 screen_width,
                    qint16 screen_height)
     : QObject(parent),
+      m_queue_display(new QQueue<QImage>),
       m_screenshot(new Screenshot),
       m_compare(new CompareFrames),
       m_thread_screenshot(new QThread(this)),
@@ -52,7 +53,15 @@ Recorder::~Recorder()
     m_thread_compare->wait();
 }
 
-QImage Recorder::getCurrentFrame() { return m_compare->getCurrentFrame(); }
+QImage Recorder::getCurrentFrame()
+{
+    m_mutex_display_queue.lock();
+    QImage current;
+    if (!m_queue_display->isEmpty())
+        current = m_queue_display->dequeue();
+    m_mutex_display_queue.unlock();
+    return current;
+}
 
 void Recorder::startRecording() const
 {
@@ -91,6 +100,12 @@ void Recorder::onTimerTimeout()
     emit takeScreenshot();
 }
 
-void Recorder::onCompare() { emit onFrameReady(); }
+void Recorder::onCompare(const QImage& image)
+{
+    m_mutex_display_queue.lock();
+    m_queue_display->enqueue(image);
+    m_mutex_display_queue.unlock();
+    emit onFrameReady();
+}
 
 void Recorder::setDebug(bool debug) { m_compare->setDebug(debug); }
