@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = avdp
-QT += widgets
+QT += widgets network
 
 HEADERS = gui.hpp \
     cli.hpp \
@@ -9,7 +9,9 @@ HEADERS = gui.hpp \
     imageblock.hpp \
     constants.hpp \
     compareframes.hpp \
-    util.hpp
+    util.hpp \
+    videostreamer.h \
+    streamingserver.h
 
 SOURCES = main.cpp \
     gui.cpp \
@@ -18,7 +20,9 @@ SOURCES = main.cpp \
     recorder.cpp \
     imageblock.cpp \
     compareframes.cpp \
-    util.cpp
+    util.cpp \
+    videostreamer.cpp \
+    streamingserver.cpp
 
 # See https://doc.qt.io/qt-5/qmake-variable-reference.html#config
 CONFIG += qt c++11 warn_on debug_and_release
