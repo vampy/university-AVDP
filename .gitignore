@@ -37,3 +37,4 @@ build/
 #QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
+screenshots/

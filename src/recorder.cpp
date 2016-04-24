@@ -21,7 +21,7 @@ Recorder::Recorder(QObject* parent,
 {
     m_screenshot->setScreen(screen_id, screen_x, screen_y, screen_width, screen_height);
 
-    m_timer->setInterval(1000 / m_fps);
+    setTimer();
     m_timer->setSingleShot(false);
     connect(m_timer, &QTimer::timeout, this, &Recorder::onTimerTimeout);
 
@@ -49,6 +49,7 @@ Recorder::Recorder(QObject* parent,
     //send frame
     connect(m_compare,&CompareFrames::sendFrame,m_video_streamer,&VideoStreamer::onSendFrame);
 
+    qInfo() << "Current FPS =" << m_fps;
     m_thread_screenshot->start();
     m_thread_compare->start();
 }
@@ -79,35 +80,52 @@ void Recorder::startRecording(QString hostname, quint16 port)
     m_timer->start();
 
     this->initConnection(hostname,port);
+
+    m_throttle = false;
 }
 
-void Recorder::stopRecording() const
+void Recorder::stopRecording()
 {
     qInfo() << "StopRecording!";
     m_timer->stop();
     m_screenshot->statsDisplay();
+    m_throttle = false;
 }
 
 void Recorder::onScreenshot(const QImage& image)
 {
-    static qint32 default_fps = static_cast<qint32>(constants::DEFAULT_FPS);
-    auto elapsed_time         = m_time_screenshot.elapsed();
-    auto current_time         = QDateTime::currentMSecsSinceEpoch();
+    static qint32 default_fps    = static_cast<qint32>(constants::DEFAULT_FPS);
+    auto elapsed_take_screenshot = m_time_take_screenshot.elapsed();
+    auto elapsed_on_screenshot   = m_time_on_screenshot.elapsed();
 
     if (m_count_screenshots % default_fps == 0)
     {
-        qInfo() << "Recorder: take screenshot = " << elapsed_time
-                << ", difference = " << current_time - m_last_time_screenshot;
+        qInfo() << "Recorder: take screenshot = " << elapsed_take_screenshot
+                << ", difference = " << elapsed_on_screenshot;
     }
 
-    m_last_time_screenshot = current_time;
+    // TODO the opposite of this until the original fps?
+    if (!m_throttle && elapsed_on_screenshot - m_max_throttle > 10)
+    {
+        m_throttle = true;
+        m_fps--;
+        qInfo() << "\nToo slow :(. Throttling FPS to " << m_fps << "\n";
+    }
+
     m_count_screenshots++;
+    m_time_on_screenshot.start();
     emit compareFrame(image);
 }
 
 void Recorder::onTimerTimeout()
 {
-    m_time_screenshot.start();
+    if (m_throttle)
+    {
+        setTimer();
+        m_throttle = false;
+    }
+
+    m_time_take_screenshot.start();
     emit takeScreenshot();
 }
 
@@ -126,7 +144,12 @@ void Recorder::initConnection(QString hostname, quint16 port)
     qDebug()<<"Recorder::initConnection"<<m_screen_width<<" "<< m_screen_height;
     m_video_streamer->setFps((quint8)m_fps);
     m_video_streamer->initConnection();
+}
 
+void Recorder::setTimer()
+{
+    m_max_throttle = 1000 / m_fps;
+    m_timer->setInterval(m_max_throttle);
 }
 
 void Recorder::setDebug(bool debug) { emit setDebugCompare(debug); }

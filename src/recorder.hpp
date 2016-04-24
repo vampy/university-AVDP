@@ -42,7 +42,8 @@ signals:
 
 public slots:
     void startRecording(QString hostname, quint16 port);
-    void stopRecording() const;
+    void stopRecording();
+
     void setDebug(bool);
 
 private slots:
@@ -52,6 +53,9 @@ private slots:
 
 private:
     void initConnection(QString hostname, quint16 port);
+
+    // Sets the fps, max_thorrtle and rthe timer interval
+    void setTimer();
 
     QQueue<QImage>* m_queue_display; // used for displaying
     QMutex m_mutex_display_queue;
@@ -69,9 +73,13 @@ private:
     qint16 m_screen_width;
     qint16 m_screen_height;
 
-    QTime m_time_screenshot; // timer to measure screenshot time
-    qint64 m_last_time_screenshot = 0;
-    quint32 m_count_screenshots   = 0;
+    QTime m_time_take_screenshot; // timer to measure take screenshot time
+    QTime m_time_on_screenshot;
+    quint32 m_count_screenshots = 0;
+
+    // reduce the number of screenshots if the machine can't take it aka reduce fps
+    quint8 m_max_throttle;
+    bool m_throttle = false;
 };
 
 #endif // RECORDER_HPP
