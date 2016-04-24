@@ -10,6 +10,7 @@ void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int st
     auto dst_bits   = const_cast<uchar*>(dst_image.constBits());
     auto bytes_line = dst_image.bytesPerLine();
     auto block_bits = const_cast<uchar*>(block.constBits());
+
     if (dst_image.bytesPerLine() != block.bytesPerLine())
     {
         qWarning() << "util::copyBlock: dst_image.bytesPerLine() == block.bytesPerLine()";
@@ -18,22 +19,23 @@ void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int st
 
     //    auto dst_pos = dst_bits + start_x;
     //    auto src_pos = block_bits + start_x;
-    //    auto offset = constants::BLOCK_WIDTH * sizeof(QRgb);
+    //    auto column = constants::BLOCK_WIDTH * sizeof(QRgb) * sizeof(QRgb);
+    // lines are the same
     for (int i = 0; i < constants::BLOCK_WIDTH; i++)
     {
         //        auto line = (i + start_y) * bytes_line;
-        auto dst_line = dst_bits + (i + start_y) * bytes_line;
-        auto src_line = block_bits + (i + start_y) * bytes_line;
+        auto dst_line = reinterpret_cast<QRgb*>(dst_bits + (i + start_y) * bytes_line);
+        auto src_line = reinterpret_cast<QRgb*>(block_bits + (i + start_y) * bytes_line);
 
         for (int j = 0; j < constants::BLOCK_WIDTH; j++)
         {
             //            auto pos = start_x + j + (i + start_y) * bytes_line;
             //            Q_ASSERT(pos < dst_image.byteCount());
-            reinterpret_cast<QRgb*>(dst_line)[start_x + j] = reinterpret_cast<QRgb*>(src_line)[start_x + j];
+            dst_line[start_x + j] = src_line[start_x + j];
             //            dst_bits[pos] = block_bits[pos];
         }
         // copy line by line, TODO use memcpy
-        //        memcpy(dst_pos + line, src_pos + line, offset);
+        //        memcpy(dst_pos + line, src_pos + line, column + 1);
     }
 }
 
@@ -47,10 +49,10 @@ void copyBlockColor(const QImage& dst_image, QRgb color, int start_x, int start_
     {
         // line y = (i + start_y) * bytes_line
         // column x on line y = start_x
-        //        std::fill_n(dst_bits + (i + start_y) * bytes_line + start_x, constants::BLOCK_WIDTH, color);
+        // std::fill_n(dst_bits + (i + start_y) * bytes_line + start_x, constants::BLOCK_WIDTH, color);
 
         // memset works with bytes, FIXME why black?
-        //         memset(dst_bits + (i + start_y) * bytes_line + start_x, color, 4 * constants::BLOCK_WIDTH);
+        // memset(dst_bits + (i + start_y) * bytes_line + start_x, color, sizeof(QRgb) * constants::BLOCK_WIDTH);
         for (int j = 0; j < constants::BLOCK_WIDTH; j++)
         {
             dst_bits[(i + start_y) * bytes_line + start_x + j] = color;

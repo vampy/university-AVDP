@@ -12,7 +12,7 @@ QImage Imageblock::getImage() const { return m_image; }
 
 bool Imageblock::operator==(const Imageblock& other)
 {
-    qreal mse;
+    qreal mse         = 0;
     auto other_image  = other.getImage();
     auto current_qrgb = reinterpret_cast<QRgb*>(const_cast<uchar*>(m_image.constBits()));
     auto other_qrgb   = reinterpret_cast<QRgb*>(const_cast<uchar*>(other_image.constBits()));
