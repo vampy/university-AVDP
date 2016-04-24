@@ -10,6 +10,7 @@ class Imageblock : public QObject
 public:
     explicit Imageblock(quint32 frame_id, const QPoint& position, const QImage& image);
     QImage getImage() const;
+    QPoint getPosition() const;
 
     bool operator==(const Imageblock& other);
     bool operator!=(const Imageblock& other);

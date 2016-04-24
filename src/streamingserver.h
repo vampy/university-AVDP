@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QtNetwork>
 
+#include "util.hpp"
+
 class StreamingServer : public QObject
 {
     Q_OBJECT
@@ -30,10 +32,13 @@ private:
     quint8 m_fps;
     qint16 m_screen_width;
     qint16 m_screen_height;
+    QImage* m_previous_frame;
+    qint16 m_current_frame_id = 0;
 
     quint8 m_expected_blocks;
-    quint8 m_block_size;
+    quint32 m_block_size = 0;
     QNetworkSession* m_network_session;
+
 };
 
 #endif // STREAMINGSERVER_H

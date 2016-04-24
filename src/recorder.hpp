@@ -6,6 +6,7 @@
 #include "compareframes.hpp"
 #include "imageblock.hpp"
 #include "screenshot.hpp"
+#include "videostreamer.h"
 
 class QObject;
 class QTime;
@@ -25,6 +26,8 @@ public:
     ~Recorder();
     QImage getCurrentFrame();
 
+
+
 signals:
     // used by GUI
     void onFrameReady();
@@ -38,7 +41,7 @@ signals:
     void setDebugCompare(bool);
 
 public slots:
-    void startRecording() const;
+    void startRecording(QString hostname, quint16 port);
     void stopRecording() const;
     void setDebug(bool);
 
@@ -48,11 +51,14 @@ private slots:
     void onCompare(const QImage&);
 
 private:
+    void initConnection(QString hostname, quint16 port);
+
     QQueue<QImage>* m_queue_display; // used for displaying
     QMutex m_mutex_display_queue;
 
     Screenshot* m_screenshot;
     CompareFrames* m_compare;
+    VideoStreamer* m_video_streamer;
 
     QThread* m_thread_screenshot;
     QThread* m_thread_compare;
@@ -60,6 +66,8 @@ private:
     // the timer to take screenshots
     QTimer* m_timer;
     qreal m_fps;
+    qint16 m_screen_width;
+    qint16 m_screen_height;
 
     QTime m_time_screenshot; // timer to measure screenshot time
     qint64 m_last_time_screenshot = 0;

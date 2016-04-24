@@ -6,6 +6,7 @@
 #include <QtNetwork>
 
 #include "constants.hpp"
+#include "imageblock.hpp"
 
 class VideoStreamer : public QObject
 {
@@ -18,11 +19,14 @@ public:
                            QString hostname     = constants::DEFAULT_HOSTNAME,
                            quint16 port         = constants::DEFAULT_PORT);
     //    ~VideoStreamer();
+    void setConnectionInfo(QString hostname, quint16 port);
+    void setResolution(qint16 width, qint16 height);
+    void setFps(quint8 fps);
     void initConnection();
 signals:
 
 public slots:
-
+    void onSendFrame(QQueue<Imageblock*>);
 private slots:
     void sessionOpened();
 

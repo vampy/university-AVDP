@@ -19,9 +19,24 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
     auto optionsGroupBox = new QGroupBox("Options", this);
 
     m_hide_window_checkbox = new QCheckBox("Hide This Window", optionsGroupBox);
+    m_hostname_line_edit = new QLineEdit();
+    m_hostname_line_edit->setText(constants::DEFAULT_HOSTNAME);
+    m_port_line_edit = new QLineEdit();
+    m_port_line_edit->setValidator(new QIntValidator(1, 65535, this));
+
+    QLabel *host_label = new QLabel(tr("&Server name:"));
+    host_label->setBuddy(m_hostname_line_edit);
+    QLabel *port_label = new QLabel(tr("S&erver port:"));
+    port_label->setBuddy(m_port_line_edit);
 
     auto options_groupbox_layout = new QGridLayout(optionsGroupBox);
+
     options_groupbox_layout->addWidget(m_hide_window_checkbox, 1, 0, 1, 2);
+    options_groupbox_layout->addWidget(host_label,2,0,1,2);
+    options_groupbox_layout->addWidget(m_hostname_line_edit,2,1,1,2);
+    options_groupbox_layout->addWidget(port_label,3,0,1,2);
+    options_groupbox_layout->addWidget(m_port_line_edit,3,1,1,2);
+
     main_layout->addWidget(optionsGroupBox);
 
     auto buttons_layout           = new QHBoxLayout;
@@ -35,6 +50,7 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
     start_recording_button->setShortcut(Qt::CTRL + Qt::Key_R);
     stop_recording_button->setShortcut(Qt::CTRL + Qt::Key_S);
 
+    connect(m_port_line_edit,&QLineEdit::returnPressed,start_recording_button,&QPushButton::click);
     connect(start_recording_button, &QPushButton::clicked, this, &GUI::startRecordingClicked);
     connect(stop_recording_button, &QPushButton::clicked, this, &GUI::stopRecordingClicked);
     connect(toggle_debug_mode_button, &QPushButton::clicked, this, &GUI::toggleDebugModeButtonClicked);
@@ -77,7 +93,11 @@ void GUI::startRecordingClicked()
     if (m_hide_window_checkbox->isChecked())
         showMinimized();
 
-    emit startRecording();
+    QString host = m_hostname_line_edit->text();
+    quint16 port = m_port_line_edit->text().toInt();
+    //TODO: handle the case when this botton is pressed twice.
+
+    emit startRecording(host,port);
 }
 
 void GUI::stopRecordingClicked() { emit stopRecording(); }

@@ -11,9 +11,12 @@ Recorder::Recorder(QObject* parent,
       m_queue_display(new QQueue<QImage>),
       m_screenshot(new Screenshot),
       m_compare(new CompareFrames),
+      m_video_streamer(new VideoStreamer),
       m_thread_screenshot(new QThread(this)),
       m_thread_compare(new QThread(this)),
       m_timer(new QTimer(this)),
+      m_screen_width(screen_width),
+      m_screen_height(screen_height),
       m_fps(fps)
 {
     m_screenshot->setScreen(screen_id, screen_x, screen_y, screen_width, screen_height);
@@ -25,6 +28,7 @@ Recorder::Recorder(QObject* parent,
     // Connect to the thread, https://stackoverflow.com/questions/11033971/qt-thread-with-movetothread
     m_screenshot->moveToThread(m_thread_screenshot);
     m_compare->moveToThread(m_thread_compare);
+
     connect(m_thread_compare, &QThread::finished, m_compare, &QObject::deleteLater);
     connect(m_thread_screenshot, &QThread::finished, m_screenshot, &QObject::deleteLater);
 
@@ -41,6 +45,9 @@ Recorder::Recorder(QObject* parent,
 
     // receive compare
     connect(m_compare, &CompareFrames::onCompare, this, &Recorder::onCompare);
+
+    //send frame
+    connect(m_compare,&CompareFrames::sendFrame,m_video_streamer,&VideoStreamer::onSendFrame);
 
     m_thread_screenshot->start();
     m_thread_compare->start();
@@ -64,11 +71,14 @@ QImage Recorder::getCurrentFrame()
     return current;
 }
 
-void Recorder::startRecording() const
+
+void Recorder::startRecording(QString hostname, quint16 port)
 {
     qInfo() << "StartRecording!";
     m_screenshot->statsReset();
     m_timer->start();
+
+    this->initConnection(hostname,port);
 }
 
 void Recorder::stopRecording() const
@@ -107,6 +117,16 @@ void Recorder::onCompare(const QImage& image)
     m_queue_display->enqueue(image);
     m_mutex_display_queue.unlock();
     emit onFrameReady();
+}
+
+void Recorder::initConnection(QString hostname, quint16 port)
+{
+    m_video_streamer->setConnectionInfo(hostname,port);
+    m_video_streamer->setResolution(m_screen_width,m_screen_height);
+    qDebug()<<"Recorder::initConnection"<<m_screen_width<<" "<< m_screen_height;
+    m_video_streamer->setFps((quint8)m_fps);
+    m_video_streamer->initConnection();
+
 }
 
 void Recorder::setDebug(bool debug) { emit setDebugCompare(debug); }

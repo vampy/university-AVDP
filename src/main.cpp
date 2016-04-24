@@ -5,6 +5,8 @@
 #include "constants.hpp"
 #include "gui.hpp"
 
+#include "streamingserver.h"
+
 int main(int argc, char* argv[])
 {
     // Warmup app
@@ -12,7 +14,7 @@ int main(int argc, char* argv[])
     QApplication::setApplicationDisplayName(constants::APP_NAME);
     QApplication::setApplicationName(constants::APP_NAME);
     QApplication::setApplicationVersion(constants::APP_VERSION);
-
+    qRegisterMetaType<QQueue<Imageblock*>>("QQueue<Imageblock*>");
     // Parse command line
     QCommandLineParser parser;
     parser.setApplicationDescription(constants::APP_DESCRIPTION);
@@ -35,8 +37,8 @@ int main(int argc, char* argv[])
          {{"s", OPTION_SCREEN}, "Screen to record", "screen_id", QString::number(constants::DEFAULT_SCREEN)},
          {OPTION_SCREEN_X, "Screen X coordinate", "x", QString::number(constants::DEFAULT_SCREEN_POS)},
          {OPTION_SCREEN_Y, "Screen Y coordinate", "y", QString::number(constants::DEFAULT_SCREEN_POS)},
-         {OPTION_SCREEN_W, "Screen width", "width", QString::number(constants::DEFAULT_SCREEN_SIZE)},
-         {OPTION_SCREEN_H, "Screen height", "height", QString::number(constants::DEFAULT_SCREEN_SIZE)}});
+         {OPTION_SCREEN_W, "Screen width", "width", QString::number(constants::DEFAULT_SCREEN_WIDTH)},
+         {OPTION_SCREEN_H, "Screen height", "height", QString::number(constants::DEFAULT_SCREEN_HEIGHT)}});
     Q_ASSERT(temp);
 
     // Process the actual command line arguments given by the user
@@ -54,7 +56,9 @@ int main(int argc, char* argv[])
     {
         // gui mode
         qInfo() << "GUI mode";
+//        gui = new GUI(fps, screen_id, screen_x, screen_y, constants::DEFAULT_SCREEN_WIDTH, constants::DEFAULT_SCREEN_HEIGHT);
         gui = new GUI(fps, screen_id, screen_x, screen_y, screen_w, screen_h);
+
         gui->show();
     }
     else
@@ -69,6 +73,8 @@ int main(int argc, char* argv[])
         // launch cli
         QTimer::singleShot(0, cli, &CLI::run);
     }
+
+    StreamingServer* server=  new StreamingServer();
 
     return app.exec();
 }

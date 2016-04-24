@@ -11,6 +11,7 @@ class QGridLayout;
 class QGroupBox;
 class QHBoxLayout;
 class QLabel;
+class QLineEdit;
 class QPushButton;
 class QSpinBox;
 class QVBoxLayout;
@@ -27,7 +28,7 @@ protected:
     void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
 
 signals:
-    void startRecording() const;
+    void startRecording(QString hostname, quint16 port) const;
     void stopRecording() const;
     void setDebug(bool) const;
 
@@ -49,6 +50,9 @@ private:
 
     // Hide program if checked
     QCheckBox* m_hide_window_checkbox;
+
+    QLineEdit* m_hostname_line_edit;
+    QLineEdit* m_port_line_edit;
 };
 
 #endif // SCREENSHOTGUI_HPP

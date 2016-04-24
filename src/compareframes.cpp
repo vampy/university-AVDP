@@ -1,6 +1,8 @@
 #include "compareframes.hpp"
 
-CompareFrames::CompareFrames(QObject* parent) : QObject(parent), m_queue_process(new QQueue<QImage>) {}
+CompareFrames::CompareFrames(QObject* parent) :
+    QObject(parent),
+    m_queue_process(new QQueue<QImage>) {}
 
 void CompareFrames::setDebug(bool debug)
 {
@@ -41,7 +43,26 @@ void CompareFrames::doWork()
             m_original_current_frame = m_current_frame.copy();
         }
 
+        //Send all blocks
+        for (int x = 0; x < m_current_frame.width(); x += constants::BLOCK_WIDTH)
+        {
+            for (int y = 0; y < m_current_frame.height(); y += constants::BLOCK_WIDTH)
+            {
+                QImage current_frame = m_current_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH);
+                Imageblock* current_block = new Imageblock(m_current_frame_id, QPoint(x, y), current_frame);
+                m_mutex_blocks_queue.lock();
+                m_queue_blocks.enqueue(current_block);
+                m_mutex_blocks_queue.unlock();
+
+
+            }
+
+        }
+
+        emit sendFrame(m_queue_blocks);
+        m_queue_blocks.clear();
         emit onCompare(m_current_frame);
+
         return;
     }
 
@@ -61,23 +82,27 @@ void CompareFrames::doWork()
 
             Q_ASSERT(!current_frame.isNull());
             Imageblock current_block(m_current_frame_id, QPoint(x, y), current_frame);
-            Imageblock next_block(m_current_frame_id + 1,
+            Imageblock* next_block = new Imageblock(m_current_frame_id + 1,
                                   QPoint(x, y),
                                   next_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH));
 
-            if (next_block == current_block)
+            if (*next_block == current_block)
             {
                 debug_counter++;
 
                 // only set red pixels in debug mode
                 if (!m_debug)
                     continue;
-
+                delete next_block;
                 util::copyBlockColor(m_current_frame, qRgb(255, 0, 0), x, y);
             }
             else
             {
                 // copy the blocks that are not equal from next frame to the current frame
+                m_mutex_blocks_queue.lock();
+                m_queue_blocks.enqueue(next_block);
+                m_mutex_blocks_queue.unlock();
+
                 util::copyBlock(m_current_frame, next_frame, x, y);
                 if (m_debug)
                 {
@@ -89,6 +114,9 @@ void CompareFrames::doWork()
     m_current_frame_id++;
 
     emit onCompare(m_current_frame);
+    qDebug()<<"Sent frame nr"<<m_current_frame_id;
+    emit sendFrame(m_queue_blocks);
+    m_queue_blocks.clear();
     if (m_current_frame_id % default_fps == 0)
     {
         qInfo() << "We have " << debug_counter << "/"

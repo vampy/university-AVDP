@@ -7,6 +7,8 @@ Imageblock::Imageblock(quint32 frame_id, const QPoint& position, const QImage& i
 
 QImage Imageblock::getImage() const { return m_image; }
 
+QPoint Imageblock::getPosition() const { return m_position; }
+
 // Calculate luma https://en.wikipedia.org/wiki/Luma_%28video%29
 #define YCOMPONENT(_color) (0.299 * ((_color >> 16) & 0xff) + 0.587 * ((_color >> 8) & 0xff) + 0.114 * (_color & 0xff))
 

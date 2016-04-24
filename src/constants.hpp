@@ -20,10 +20,10 @@ const qreal DEFAULT_FPS                  = 25;
 const quint8 DEFAULT_FPS2                = 25;
 const qreal DEFAULT_IMAGE_DIFF_THRESHOLD = 5.0;
 
-const char* const DEFAULT_HOSTNAME = "localhost";
+const char* const DEFAULT_HOSTNAME = "192.168.1.2";
 const quint16 DEFAULT_PORT         = 12345;
-const qint16 DEFAULT_SCREEN_WIDTH  = 1000;
-const qint16 DEFAULT_SCREEN_HEIGHT = 500;
+const qint16 DEFAULT_SCREEN_WIDTH  = 1376;
+const qint16 DEFAULT_SCREEN_HEIGHT = 768;
 }
 
 #endif // CONSTANTS_HPP
