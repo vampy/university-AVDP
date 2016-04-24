@@ -39,7 +39,7 @@ private:
     QString m_hostname;
     quint16 m_port;
 
-    QNetworkSession* m_network_session;
+    QNetworkSession* m_network_session = nullptr;
 };
 
 #endif // VIDEOSTREAMER_H

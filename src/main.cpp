@@ -5,7 +5,7 @@
 #include "constants.hpp"
 #include "gui.hpp"
 
-#include "streamingserver.h"
+#include "streamingserver.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -56,7 +56,8 @@ int main(int argc, char* argv[])
     {
         // gui mode
         qInfo() << "GUI mode";
-//        gui = new GUI(fps, screen_id, screen_x, screen_y, constants::DEFAULT_SCREEN_WIDTH, constants::DEFAULT_SCREEN_HEIGHT);
+        //        gui = new GUI(fps, screen_id, screen_x, screen_y, constants::DEFAULT_SCREEN_WIDTH,
+        //        constants::DEFAULT_SCREEN_HEIGHT);
         gui = new GUI(fps, screen_id, screen_x, screen_y, screen_w, screen_h);
 
         gui->show();
@@ -74,7 +75,7 @@ int main(int argc, char* argv[])
         QTimer::singleShot(0, cli, &CLI::run);
     }
 
-    StreamingServer* server=  new StreamingServer();
+    new StreamingServer();
 
     return app.exec();
 }

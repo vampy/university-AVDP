@@ -1,6 +1,6 @@
-#include "streamingserver.h"
+#include "streamingserver.hpp"
 
-StreamingServer::StreamingServer(QObject* parent) : QObject(parent), m_tcp_server(nullptr), m_network_session(nullptr)
+StreamingServer::StreamingServer(QObject* parent) : QObject(parent)
 {
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired)
@@ -21,7 +21,7 @@ StreamingServer::StreamingServer(QObject* parent) : QObject(parent), m_tcp_serve
         m_network_session = new QNetworkSession(config, this);
         connect(m_network_session, &QNetworkSession::opened, this, &StreamingServer::sessionOpened);
 
-        //        statusLabel->setText(tr("Opening network session."));
+        //                statusLabel->setText("Opening network session.");
         m_network_session->open();
     }
     else
@@ -61,11 +61,12 @@ void StreamingServer::sessionOpened()
     }
 
     m_tcp_server = new QTcpServer(this);
-    if (!m_tcp_server->listen())
+    if (!m_tcp_server->listen(QHostAddress(constants::DEFAULT_HOSTNAME), constants::DEFAULT_PORT))
     {
-        qDebug() << tr("Streaming Server"), tr("Unable to start the server: %1.").arg(m_tcp_server->errorString());
+        qDebug() << "Streaming Server. " << QString("Unable to start the server: %1.").arg(m_tcp_server->errorString());
         return;
     }
+
     QString ipAddress;
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
     // use the first non-localhost IPv4 address
@@ -80,37 +81,40 @@ void StreamingServer::sessionOpened()
     // if we did not find one, use IPv4 localhost
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    qDebug()<< (QString("The server is running on IP: %1 and Port: %2").arg(ipAddress).arg(m_tcp_server->serverPort()));
+    qDebug()
+        << (QString("The server is running on IP: %1 and Port: %2").arg(ipAddress).arg(m_tcp_server->serverPort()));
 }
 
 void StreamingServer::readData()
 {
-
     QDataStream in(m_tcp_socket);
-    in.setVersion(QDataStream::Qt_4_0);
+    in.setVersion(QDataStream::Qt_5_4);
 
     if (!m_streaming_started)
     {
-        if (m_block_size == 0){
+        if (m_block_size == 0)
+        {
             if (m_tcp_socket->bytesAvailable() < (int)sizeof(quint32))
                 return;
             in >> m_block_size;
         }
-
 
         if (m_tcp_socket->bytesAvailable() < m_block_size)
             return;
 
         in >> m_screen_width >> m_screen_height >> m_fps;
         qDebug() << "Received fps" << m_fps;
-        qDebug() << "Received width" <<m_screen_width;
-        qDebug() << "Received height" <<m_screen_height;
-        m_previous_frame = new QImage((int)m_screen_width,(int)m_screen_height,QImage::Format_RGB32);
+        qDebug() << "Received width" << m_screen_width;
+        qDebug() << "Received height" << m_screen_height;
+        m_previous_frame = new QImage((int)m_screen_width, (int)m_screen_height, QImage::Format_RGB32);
         m_previous_frame->fill(Qt::red);
         m_streaming_started = true;
-        m_block_size = 0;
-    }else{
-        if (m_block_size ==0){
+        m_block_size        = 0;
+    }
+    else
+    {
+        if (m_block_size == 0)
+        {
             if (m_tcp_socket->bytesAvailable() < (int)sizeof(quint32))
                 return;
             in >> m_block_size;
@@ -121,26 +125,26 @@ void StreamingServer::readData()
 
         int no_of_blocks;
 
-        in>>no_of_blocks;
+        in >> no_of_blocks;
         QPoint position;
         QImage image;
 
-        for (int i=0;i<no_of_blocks;i++){
-            in>>position>>image;
+        for (int i = 0; i < no_of_blocks; i++)
+        {
+            in >> position >> image;
             int x = (position.x());
             int y = (position.y());
-            for (int i=0;i< image.width();i++){
-                for(int j=0;j < image.height();j++ ){
-                    m_previous_frame->setPixel(i+x,j+y,image.pixel(i,j));
+            for (int i = 0; i < image.width(); i++)
+            {
+                for (int j = 0; j < image.height(); j++)
+                {
+                    m_previous_frame->setPixel(i + x, j + y, image.pixel(i, j));
                 }
             }
-
         }
-        m_previous_frame->save("./screenshots/frame"+QString::number(m_current_frame_id)+".jpg");
-        qDebug()<<"Received frame nr"<<m_current_frame_id;
+        m_previous_frame->save("./screenshots/frame" + QString::number(m_current_frame_id) + ".jpg");
+        qDebug() << "Received frame nr" << m_current_frame_id;
         m_block_size = 0;
-        m_current_frame_id ++;
+        m_current_frame_id++;
     }
-
-
 }

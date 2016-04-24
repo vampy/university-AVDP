@@ -22,14 +22,13 @@ signals:
     void onCompare(const QImage&);
     void sendFrame(const QQueue<Imageblock*>);
 
-
 public slots:
     void compareFrame(const QImage&);
     void setDebug(bool);
 
 private:
-    QQueue<QImage>* m_queue_process; // used for processing in doWork
-    QQueue<Imageblock*> m_queue_blocks; //used for storing different image blocks.
+    QQueue<QImage>* m_queue_process;    // used for processing in doWork
+    QQueue<Imageblock*> m_queue_blocks; // used for storing different image blocks.
     QMutex m_mutex_process_queue;
     QMutex m_mutex_blocks_queue;
 

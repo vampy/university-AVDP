@@ -26,7 +26,7 @@ private slots:
 
 private:
     bool m_streaming_started = false;
-    QTcpServer* m_tcp_server;
+    QTcpServer* m_tcp_server = nullptr;
     QTcpSocket* m_tcp_socket;
 
     quint8 m_fps;
@@ -36,9 +36,8 @@ private:
     qint16 m_current_frame_id = 0;
 
     quint8 m_expected_blocks;
-    quint32 m_block_size = 0;
-    QNetworkSession* m_network_session;
-
+    quint32 m_block_size               = 0;
+    QNetworkSession* m_network_session = nullptr;
 };
 
 #endif // STREAMINGSERVER_H

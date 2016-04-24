@@ -6,7 +6,7 @@
 #include "compareframes.hpp"
 #include "imageblock.hpp"
 #include "screenshot.hpp"
-#include "videostreamer.h"
+#include "videostreamer.hpp"
 
 class QObject;
 class QTime;
@@ -25,8 +25,6 @@ public:
                       qint16 screen_height = constants::DEFAULT_SCREEN_SIZE);
     ~Recorder();
     QImage getCurrentFrame();
-
-
 
 signals:
     // used by GUI

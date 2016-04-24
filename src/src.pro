@@ -10,8 +10,8 @@ HEADERS = gui.hpp \
     constants.hpp \
     compareframes.hpp \
     util.hpp \
-    videostreamer.h \
-    streamingserver.h
+    streamingserver.hpp \
+    videostreamer.hpp
 
 SOURCES = main.cpp \
     gui.cpp \
