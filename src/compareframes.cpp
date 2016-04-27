@@ -48,7 +48,7 @@ void CompareFrames::doWork()
             {
                 for (int y = 0; y < m_current_frame.height(); y += constants::BLOCK_WIDTH)
                 {
-                    QImage current_frame      = m_current_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH);
+                    QImage current_frame = m_current_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH);
                     Imageblock* current_block = new Imageblock(m_current_frame_id, QPoint(x, y), current_frame);
                     m_mutex_blocks_queue.lock();
                     m_queue_blocks.enqueue(current_block);
@@ -116,13 +116,12 @@ void CompareFrames::doWork()
                     util::copyBlock(m_original_current_frame, next_frame, x, y);
                 }
             }
-
         }
     }
     m_current_frame_id++;
 
     emit onCompare(m_current_frame);
-//    qDebug() << "Sent frame nr" << m_current_frame_id;
+    //    qDebug() << "Sent frame nr" << m_current_frame_id;
     if (constants::IS_NETWORKING)
     {
         emit sendFrame(m_queue_blocks);

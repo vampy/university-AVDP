@@ -20,7 +20,7 @@ Recorder::Recorder(QObject* parent,
 {
     if (constants::IS_NETWORKING)
     {
-        m_video_streamer = new VideoStreamer;
+        m_video_streamer        = new VideoStreamer;
         m_thread_video_streamer = new QThread(this);
     }
     else
@@ -29,7 +29,6 @@ Recorder::Recorder(QObject* parent,
     }
 
     m_screenshot->setScreen(screen_id, screen_x, screen_y, screen_width, screen_height);
-
 
     setTimer();
     m_timer->setSingleShot(false);
@@ -62,9 +61,11 @@ Recorder::Recorder(QObject* parent,
 
     // send frame to video streamer
     if (constants::IS_NETWORKING)
+    {
+        connect(m_video_streamer, &VideoStreamer::connected, this, &Recorder::connected);
+        connect(this, &Recorder::initConnectionStreamer, m_video_streamer, &VideoStreamer::initConnection);
         connect(m_compare, &CompareFrames::sendFrame, m_video_streamer, &VideoStreamer::onSendFrame);
-
-
+    }
     qInfo() << "Current FPS =" << m_fps;
     m_thread_screenshot->start();
     m_thread_compare->start();
@@ -77,8 +78,12 @@ Recorder::~Recorder()
 {
     m_thread_screenshot->quit();
     m_thread_compare->quit();
+    if (constants::IS_NETWORKING)
+        m_thread_video_streamer->wait();
     m_thread_screenshot->wait();
     m_thread_compare->wait();
+    if (constants::IS_NETWORKING)
+        m_thread_video_streamer->wait();
 }
 
 QImage Recorder::getCurrentFrame()
@@ -94,14 +99,15 @@ QImage Recorder::getCurrentFrame()
 void Recorder::startRecording(QString hostname, quint16 port)
 {
     qInfo() << "StartRecording!";
-    initConnection(hostname, port);
 
-    m_screenshot->statsReset();
-    m_timer->start();
-    m_time_on_screenshot.restart();
-    m_time_take_screenshot.restart();
-
-    m_throttle = false;
+    if (constants::IS_NETWORKING)
+    {
+        initConnection(hostname, port);
+    }
+    else
+    {
+        startTimers();
+    }
 }
 
 void Recorder::stopRecording()
@@ -130,6 +136,11 @@ void Recorder::onScreenshot(const QImage& image)
         m_throttle = true;
         m_fps--;
         qInfo() << "\nToo slow :(. Throttling FPS to " << m_fps << "\n";
+        if (!m_fps)
+        {
+            m_fps = 1;
+            qInfo() << "\n Oh boy. here's a nickel kid. go buy yourself a real computer. \n";
+        }
     }
 
     m_count_screenshots++;
@@ -157,15 +168,28 @@ void Recorder::onCompare(const QImage& image)
     emit onFrameReady();
 }
 
+void Recorder::startTimers()
+{
+    m_screenshot->statsReset();
+    m_timer->start();
+    m_time_on_screenshot.restart();
+    m_time_take_screenshot.restart();
+
+    m_throttle = false;
+}
+
 void Recorder::initConnection(QString hostname, quint16 port)
 {
-    if (!constants::IS_NETWORKING) return;
+    if (!constants::IS_NETWORKING)
+        return;
 
     m_video_streamer->setConnectionInfo(hostname, port);
     m_video_streamer->setResolution(m_screen_width, m_screen_height);
     qDebug() << "Recorder::initConnection" << m_screen_width << " " << m_screen_height;
     m_video_streamer->setFps((quint8)m_fps);
-    m_video_streamer->initConnection();
+
+    // Pray!
+    emit initConnectionStreamer();
 }
 
 void Recorder::setTimer()
@@ -175,3 +199,9 @@ void Recorder::setTimer()
 }
 
 void Recorder::setDebug(bool debug) { emit setDebugCompare(debug); }
+
+void Recorder::connected()
+{
+    m_is_connected = true;
+    startTimers();
+}

@@ -22,10 +22,12 @@ public:
     void setConnectionInfo(QString hostname, quint16 port);
     void setResolution(qint16 width, qint16 height);
     void setFps(quint8 fps);
-    void initConnection();
+
 signals:
+    void connected();
 
 public slots:
+    void initConnection();
     void onSendFrame(QQueue<Imageblock*>);
 private slots:
     void sessionOpened();
@@ -41,7 +43,7 @@ private:
     quint16 m_port;
 
     QNetworkSession* m_network_session = nullptr;
-    bool m_is_connected = false;
+    bool m_is_connected                = false;
 };
 
 #endif // VIDEOSTREAMER_H

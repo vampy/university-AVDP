@@ -38,6 +38,8 @@ signals:
 
     void setDebugCompare(bool);
 
+    void initConnectionStreamer();
+
 public slots:
     void startRecording(QString hostname, quint16 port);
     void stopRecording();
@@ -45,11 +47,13 @@ public slots:
     void setDebug(bool);
 
 private slots:
+    void connected();
     void onScreenshot(const QImage&);
     void onTimerTimeout();
     void onCompare(const QImage&);
 
 private:
+    void startTimers();
     void initConnection(QString hostname, quint16 port);
 
     // Sets the fps, max_thorrtle and rthe timer interval
@@ -58,12 +62,12 @@ private:
     QQueue<QImage>* m_queue_display; // used for displaying
     QMutex m_mutex_display_queue;
 
-    Screenshot* m_screenshot = nullptr;
-    CompareFrames* m_compare = nullptr;
+    Screenshot* m_screenshot        = nullptr;
+    CompareFrames* m_compare        = nullptr;
     VideoStreamer* m_video_streamer = nullptr;
 
-    QThread* m_thread_screenshot = nullptr;
-    QThread* m_thread_compare = nullptr;
+    QThread* m_thread_screenshot     = nullptr;
+    QThread* m_thread_compare        = nullptr;
     QThread* m_thread_video_streamer = nullptr;
 
     // the timer to take screenshots
@@ -79,6 +83,9 @@ private:
     // reduce the number of screenshots if the machine can't take it aka reduce fps
     quint8 m_max_throttle;
     bool m_throttle = false;
+
+    // is connected to server
+    bool m_is_connected = false;
 };
 
 #endif // RECORDER_HPP
