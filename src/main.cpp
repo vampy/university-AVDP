@@ -29,10 +29,11 @@ int main(int argc, char* argv[])
     const char* const OPTION_SCREEN_W = "screen-w";
     const char* const OPTION_SCREEN_H = "screen-h";
     const char* const OPTION_FPS      = "fps";
+
     // const char* const OPTION_LIST_SCREENS = "list-screens";
     auto temp = parser.addOptions(
         {// Show the gui or command line
-         {{"g", OPTION_GUI}, "GUI mode"},
+         {{"g", OPTION_GUI}, "GUI mode/Client"},
          {{"f", OPTION_FPS}, "Frames per second", "fps", QString::number(constants::DEFAULT_FPS)},
          {{"s", OPTION_SCREEN}, "Screen to record", "screen_id", QString::number(constants::DEFAULT_SCREEN)},
          {OPTION_SCREEN_X, "Screen X coordinate", "x", QString::number(constants::DEFAULT_SCREEN_POS)},
@@ -72,10 +73,11 @@ int main(int argc, char* argv[])
         QObject::connect(cli, &CLI::finished, &app, &QApplication::quit);
 
         // launch cli
-        QTimer::singleShot(0, cli, &CLI::run);
+//        QTimer::singleShot(0, cli, &CLI::run);
+        new StreamingServer();
     }
 
-    new StreamingServer();
+
 
     return app.exec();
 }

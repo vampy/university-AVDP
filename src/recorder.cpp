@@ -11,7 +11,6 @@ Recorder::Recorder(QObject* parent,
       m_queue_display(new QQueue<QImage>),
       m_screenshot(new Screenshot),
       m_compare(new CompareFrames),
-      m_video_streamer(new VideoStreamer),
       m_thread_screenshot(new QThread(this)),
       m_thread_compare(new QThread(this)),
       m_timer(new QTimer(this)),
@@ -19,7 +18,18 @@ Recorder::Recorder(QObject* parent,
       m_screen_width(screen_width),
       m_screen_height(screen_height)
 {
+    if (constants::IS_NETWORKING)
+    {
+        m_video_streamer = new VideoStreamer;
+        m_thread_video_streamer = new QThread(this);
+    }
+    else
+    {
+        qInfo() << "Networking is disabled";
+    }
+
     m_screenshot->setScreen(screen_id, screen_x, screen_y, screen_width, screen_height);
+
 
     setTimer();
     m_timer->setSingleShot(false);
@@ -28,9 +38,13 @@ Recorder::Recorder(QObject* parent,
     // Connect to the thread, https://stackoverflow.com/questions/11033971/qt-thread-with-movetothread
     m_screenshot->moveToThread(m_thread_screenshot);
     m_compare->moveToThread(m_thread_compare);
+    if (constants::IS_NETWORKING)
+        m_video_streamer->moveToThread(m_thread_video_streamer);
 
     connect(m_thread_compare, &QThread::finished, m_compare, &QObject::deleteLater);
     connect(m_thread_screenshot, &QThread::finished, m_screenshot, &QObject::deleteLater);
+    if (constants::IS_NETWORKING)
+        connect(m_thread_video_streamer, &QThread::finished, m_video_streamer, &QObject::deleteLater);
 
     // take screenshot
     typedef void (Screenshot::*ScreenshotVoidTake)(void);
@@ -46,12 +60,17 @@ Recorder::Recorder(QObject* parent,
     // receive compare
     connect(m_compare, &CompareFrames::onCompare, this, &Recorder::onCompare);
 
-    // send frame
-    connect(m_compare, &CompareFrames::sendFrame, m_video_streamer, &VideoStreamer::onSendFrame);
+    // send frame to video streamer
+    if (constants::IS_NETWORKING)
+        connect(m_compare, &CompareFrames::sendFrame, m_video_streamer, &VideoStreamer::onSendFrame);
+
 
     qInfo() << "Current FPS =" << m_fps;
     m_thread_screenshot->start();
     m_thread_compare->start();
+
+    if (constants::IS_NETWORKING)
+        m_thread_video_streamer->start();
 }
 
 Recorder::~Recorder()
@@ -75,10 +94,12 @@ QImage Recorder::getCurrentFrame()
 void Recorder::startRecording(QString hostname, quint16 port)
 {
     qInfo() << "StartRecording!";
+    initConnection(hostname, port);
+
     m_screenshot->statsReset();
     m_timer->start();
-
-    initConnection(hostname, port);
+    m_time_on_screenshot.restart();
+    m_time_take_screenshot.restart();
 
     m_throttle = false;
 }
@@ -138,6 +159,8 @@ void Recorder::onCompare(const QImage& image)
 
 void Recorder::initConnection(QString hostname, quint16 port)
 {
+    if (!constants::IS_NETWORKING) return;
+
     m_video_streamer->setConnectionInfo(hostname, port);
     m_video_streamer->setResolution(m_screen_width, m_screen_height);
     qDebug() << "Recorder::initConnection" << m_screen_width << " " << m_screen_height;

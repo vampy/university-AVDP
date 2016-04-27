@@ -58,12 +58,13 @@ private:
     QQueue<QImage>* m_queue_display; // used for displaying
     QMutex m_mutex_display_queue;
 
-    Screenshot* m_screenshot;
-    CompareFrames* m_compare;
-    VideoStreamer* m_video_streamer;
+    Screenshot* m_screenshot = nullptr;
+    CompareFrames* m_compare = nullptr;
+    VideoStreamer* m_video_streamer = nullptr;
 
-    QThread* m_thread_screenshot;
-    QThread* m_thread_compare;
+    QThread* m_thread_screenshot = nullptr;
+    QThread* m_thread_compare = nullptr;
+    QThread* m_thread_video_streamer = nullptr;
 
     // the timer to take screenshots
     QTimer* m_timer;

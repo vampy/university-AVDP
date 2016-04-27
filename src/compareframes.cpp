@@ -41,21 +41,24 @@ void CompareFrames::doWork()
             m_original_current_frame = m_current_frame.copy();
         }
 
-        // Send all blocks
-        for (int x = 0; x < m_current_frame.width(); x += constants::BLOCK_WIDTH)
+        // Send all blocks, TODO send whole first image
+        if (constants::IS_NETWORKING)
         {
-            for (int y = 0; y < m_current_frame.height(); y += constants::BLOCK_WIDTH)
+            for (int x = 0; x < m_current_frame.width(); x += constants::BLOCK_WIDTH)
             {
-                QImage current_frame      = m_current_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH);
-                Imageblock* current_block = new Imageblock(m_current_frame_id, QPoint(x, y), current_frame);
-                m_mutex_blocks_queue.lock();
-                m_queue_blocks.enqueue(current_block);
-                m_mutex_blocks_queue.unlock();
+                for (int y = 0; y < m_current_frame.height(); y += constants::BLOCK_WIDTH)
+                {
+                    QImage current_frame      = m_current_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH);
+                    Imageblock* current_block = new Imageblock(m_current_frame_id, QPoint(x, y), current_frame);
+                    m_mutex_blocks_queue.lock();
+                    m_queue_blocks.enqueue(current_block);
+                    m_mutex_blocks_queue.unlock();
+                }
             }
-        }
 
-        emit sendFrame(m_queue_blocks);
-        m_queue_blocks.clear();
+            emit sendFrame(m_queue_blocks);
+            m_queue_blocks.clear();
+        }
         emit onCompare(m_current_frame);
 
         return;
@@ -84,20 +87,28 @@ void CompareFrames::doWork()
 
             if (*next_block == current_block)
             {
+                delete next_block;
                 debug_counter++;
 
                 // only set red pixels in debug mode
                 if (!m_debug)
                     continue;
-                delete next_block;
+
                 util::copyBlockColor(m_current_frame, qRgb(255, 0, 0), x, y);
             }
             else
             {
                 // copy the blocks that are not equal from next frame to the current frame
-                m_mutex_blocks_queue.lock();
-                m_queue_blocks.enqueue(next_block);
-                m_mutex_blocks_queue.unlock();
+                if (constants::IS_NETWORKING)
+                {
+                    m_mutex_blocks_queue.lock();
+                    m_queue_blocks.enqueue(next_block);
+                    m_mutex_blocks_queue.unlock();
+                }
+                else
+                {
+                    delete next_block;
+                }
 
                 util::copyBlock(m_current_frame, next_frame, x, y);
                 if (m_debug)
@@ -105,14 +116,19 @@ void CompareFrames::doWork()
                     util::copyBlock(m_original_current_frame, next_frame, x, y);
                 }
             }
+
         }
     }
     m_current_frame_id++;
 
     emit onCompare(m_current_frame);
-    qDebug() << "Sent frame nr" << m_current_frame_id;
-    emit sendFrame(m_queue_blocks);
-    m_queue_blocks.clear();
+//    qDebug() << "Sent frame nr" << m_current_frame_id;
+    if (constants::IS_NETWORKING)
+    {
+        emit sendFrame(m_queue_blocks);
+        m_queue_blocks.clear();
+    }
+
     if (m_current_frame_id % default_fps == 0)
     {
         qInfo() << "We have " << debug_counter << "/"

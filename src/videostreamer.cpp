@@ -16,6 +16,7 @@ VideoStreamer::VideoStreamer(QObject* parent,
       m_port(port)
 {
 
+    // TODO find out if we really need this
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired)
     {
@@ -70,6 +71,7 @@ void VideoStreamer::initConnection()
 
     m_tcp_socket->write(block);
     m_tcp_socket->waitForBytesWritten();
+    qInfo() << "Connected to server";
 }
 
 void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
