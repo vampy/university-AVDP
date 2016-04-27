@@ -37,6 +37,9 @@ VideoStreamer::VideoStreamer(QObject* parent,
         connect(m_network_session, &QNetworkSession::opened, this, &VideoStreamer::sessionOpened);
         m_network_session->open();
     }
+
+    typedef void (QAbstractSocket::*QAbstractSocketErrorSignal)(QAbstractSocket::SocketError);
+    connect(m_tcp_socket, static_cast<QAbstractSocketErrorSignal>(&QTcpSocket::error), this, &VideoStreamer::socketError);
 }
 
 void VideoStreamer::setConnectionInfo(QString hostname, quint16 port)
@@ -56,9 +59,14 @@ void VideoStreamer::setFps(quint8 fps) { m_fps = fps; }
 void VideoStreamer::initConnection()
 {
     m_tcp_socket->abort();
+    m_is_connected = true;
     m_tcp_socket->connectToHost(m_hostname, m_port);
-    m_tcp_socket->setParent(0);
+    if (!m_tcp_socket->waitForConnected())
+    {
+        socketError(m_tcp_socket->error());
+    }
 
+    if (!m_is_connected) return;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -76,6 +84,13 @@ void VideoStreamer::initConnection()
 
 void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
 {
+    if (!m_is_connected)
+    {
+        while (!queue_blocks.empty()) delete queue_blocks.dequeue();
+
+        return;
+    }
+
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -98,3 +113,9 @@ void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
 }
 
 void VideoStreamer::sessionOpened() {}
+
+void VideoStreamer::socketError(QAbstractSocket::SocketError /*error*/)
+{
+    m_is_connected = false;
+    qInfo() << "TCPSOCKET ERROR: " + m_tcp_socket->errorString();
+}

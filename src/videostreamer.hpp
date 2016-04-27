@@ -29,6 +29,7 @@ public slots:
     void onSendFrame(QQueue<Imageblock*>);
 private slots:
     void sessionOpened();
+    void socketError(QAbstractSocket::SocketError);
 
 private:
     QTcpSocket* m_tcp_socket;
@@ -40,6 +41,7 @@ private:
     quint16 m_port;
 
     QNetworkSession* m_network_session = nullptr;
+    bool m_is_connected = false;
 };
 
 #endif // VIDEOSTREAMER_H

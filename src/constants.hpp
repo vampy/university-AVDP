@@ -24,7 +24,7 @@ const char* const DEFAULT_HOSTNAME = "localhost";
 const quint16 DEFAULT_PORT         = 12345;
 const qint16 DEFAULT_SCREEN_WIDTH  = 1376;
 const qint16 DEFAULT_SCREEN_HEIGHT = 768;
-const bool IS_NETWORKING = false;
+const bool IS_NETWORKING = true;
 }
 
 #endif // CONSTANTS_HPP
