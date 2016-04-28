@@ -131,7 +131,7 @@ void Recorder::onScreenshot(const QImage& image)
     }
 
     // TODO the opposite of this until the original fps?
-    if (!m_throttle && elapsed_on_screenshot - m_max_throttle > 10)
+    if (!m_throttle && elapsed_on_screenshot - m_max_throttle > m_max_throttle_threshold)
     {
         m_throttle = true;
         m_fps--;
@@ -174,7 +174,6 @@ void Recorder::startTimers()
     m_timer->start();
     m_time_on_screenshot.restart();
     m_time_take_screenshot.restart();
-
     m_throttle = false;
 }
 
@@ -194,7 +193,8 @@ void Recorder::initConnection(QString hostname, quint16 port)
 
 void Recorder::setTimer()
 {
-    m_max_throttle = 1000 / m_fps;
+    m_max_throttle           = 1000 / m_fps;
+    m_max_throttle_threshold = 10; // Scientifically choosed! Formula is too long to proove here.
     m_timer->setInterval(m_max_throttle);
 }
 

@@ -16,15 +16,20 @@ const qint8 DEFAULT_SCREEN = 0;
 const qint16 DEFAULT_SCREEN_POS  = -1;
 const qint16 DEFAULT_SCREEN_SIZE = 0;
 
-const qreal DEFAULT_FPS                  = 25;
-const quint8 DEFAULT_FPS2                = 25;
-const qreal DEFAULT_IMAGE_DIFF_THRESHOLD = 5.0;
+const qreal DEFAULT_FPS   = 25;
+const quint8 DEFAULT_FPS2 = 25;
 
 const char* const DEFAULT_HOSTNAME = "localhost";
 const quint16 DEFAULT_PORT         = 12345;
-const qint16 DEFAULT_SCREEN_WIDTH  = 1376;
-const qint16 DEFAULT_SCREEN_HEIGHT = 768;
+
+// use the whole screen, DEFAULT_SCREEN_SIZE
+const qint16 DEFAULT_SCREEN_WIDTH  = 0;
+const qint16 DEFAULT_SCREEN_HEIGHT = 0;
 const bool IS_NETWORKING           = true;
+
+// This should affect performance a lot
+const quint8 DEFAULT_IMAGE_DIFF_SKIP     = 2;
+const qreal DEFAULT_IMAGE_DIFF_THRESHOLD = 5.0;
 }
 
 #endif // CONSTANTS_HPP

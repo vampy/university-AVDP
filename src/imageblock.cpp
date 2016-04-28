@@ -22,16 +22,19 @@ bool Imageblock::operator==(const Imageblock& other)
     auto width        = m_image.width();
     auto height       = m_image.height();
 
-    for (int x = 0; x < width; x++)
+    // TODO improve performance...
+    for (int x = 0; x < width; x += constants::DEFAULT_IMAGE_DIFF_SKIP)
     {
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < height; y += constants::DEFAULT_IMAGE_DIFF_SKIP)
         {
             auto index = x + y * bytes_line;
             auto value = YCOMPONENT(current_qrgb[index]) - YCOMPONENT(other_qrgb[index]);
             mse += value * value;
         }
     }
-    mse /= (width * height);
+
+    // TODO see if here we must divide width and height by DEFAULT_COMPARE_SKIP
+    mse /= ((width / constants::DEFAULT_IMAGE_DIFF_SKIP) * (height / constants::DEFAULT_IMAGE_DIFF_SKIP));
 
     return mse < constants::DEFAULT_IMAGE_DIFF_THRESHOLD;
 }

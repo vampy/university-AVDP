@@ -92,6 +92,7 @@ void StreamingServer::sessionOpened()
 
 void StreamingServer::readyRead()
 {
+    // See http://doc.qt.io/qt-5/datastreamformat.html
     QDataStream in(m_tcp_socket);
     in.setVersion(QDataStream::Qt_5_4);
 

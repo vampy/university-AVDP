@@ -82,6 +82,7 @@ private:
 
     // reduce the number of screenshots if the machine can't take it aka reduce fps
     quint8 m_max_throttle;
+    quint8 m_max_throttle_threshold;
     bool m_throttle = false;
 
     // is connected to server

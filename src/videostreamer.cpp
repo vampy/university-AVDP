@@ -104,6 +104,7 @@ void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
+    // reserve size
     out << (quint32)0;
     out << queue_blocks.size();
 
@@ -114,6 +115,7 @@ void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
         delete imageblock;
     }
 
+    // set size of the data block
     out.device()->seek(0);
     out << (quint32)(block.size() - sizeof(quint32));
 
