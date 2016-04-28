@@ -2,6 +2,36 @@
 
 namespace util
 {
+
+bool createDir(QString dirname, bool remove_if_exists)
+{
+    // remove the dir if it does exist
+    QDir dir(dirname);
+    if (remove_if_exists && dir.exists())
+    {
+        if (!dir.removeRecursively())
+        {
+            qCritical() << QString("Can't remove dir %1").arg(dirname);
+            return false;
+        }
+    }
+
+    // go up from the dir so that we can create it
+    if (!dir.cdUp())
+    {
+        qCritical() << QString("Can't cd up from dir %1").arg(dirname);
+        return false;
+    }
+
+    if (!dir.mkdir(dirname))
+    {
+        qCritical() << QString("Can't mkdir dir %1").arg(dirname);
+        return false;
+    }
+
+    return true;
+}
+
 //// See https://code.woboq.org/qt5/qtbase/src/gui/image/qimage.cpp.html#_ZN6QImage8setPixelEiij
 //// Set pixel without detach
 void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int start_y)

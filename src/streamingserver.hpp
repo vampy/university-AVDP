@@ -22,9 +22,12 @@ public slots:
 private slots:
     void establishConnection();
     void sessionOpened();
-    void readData();
+    void readyRead();
+    void disconnected();
 
 private:
+    QString m_dir_save = "screenshots_network";
+
     bool m_streaming_started = false;
     QTcpServer* m_tcp_server = nullptr;
     QTcpSocket* m_tcp_socket;
@@ -36,6 +39,8 @@ private:
     qint16 m_current_frame_id = 0;
 
     quint8 m_expected_blocks;
+
+    // the total size of the data block expected
     quint32 m_block_size               = 0;
     QNetworkSession* m_network_session = nullptr;
 };

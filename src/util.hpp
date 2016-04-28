@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QDebug>
+#include <QDir>
 #include <QImage>
 #include "constants.hpp"
 
@@ -71,6 +72,7 @@ inline QRgb getPixel(const QImage& image, int x, int y)
     return reinterpret_cast<QRgb*>(line)[x];
 }
 
+bool createDir(QString dirname, bool remove_if_exists = true);
 void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int start_y);
 void copyBlockColor(const QImage& dst_image, QRgb color, int start_x, int start_y);
 }

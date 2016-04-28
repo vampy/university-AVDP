@@ -59,7 +59,9 @@ void VideoStreamer::setFps(quint8 fps) { m_fps = fps; }
 
 void VideoStreamer::initConnection()
 {
-    m_tcp_socket->abort();
+    m_tcp_socket->disconnectFromHost();
+    m_tcp_socket->waitForDisconnected();
+
     m_is_connected = true;
     m_tcp_socket->connectToHost(m_hostname, m_port);
     if (!m_tcp_socket->waitForConnected())
@@ -73,9 +75,11 @@ void VideoStreamer::initConnection()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
+    // reserve size
     out << (quint32)0;
-
     out << m_screen_width << m_screen_height << m_fps;
+
+    // set size of the data block
     out.device()->seek(0);
     out << (quint32)(block.size() - sizeof(quint32));
 
@@ -87,6 +91,7 @@ void VideoStreamer::initConnection()
 
 void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
 {
+    // Fake consume
     if (!m_is_connected)
     {
         while (!queue_blocks.empty())

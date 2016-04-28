@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
         QObject::connect(cli, &CLI::finished, &app, &QApplication::quit);
 
         // launch cli
-        //        QTimer::singleShot(0, cli, &CLI::run);
+        // QTimer::singleShot(0, cli, &CLI::run);
         new StreamingServer();
     }
 

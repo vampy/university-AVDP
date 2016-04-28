@@ -21,13 +21,7 @@ void CLI::run()
     qInfo() << "CLI::run";
 
     // remove the screenshots dir if it does not exist
-    QDir dir(m_dir_screenshots);
-    if (dir.exists())
-    {
-        Q_ASSERT(dir.removeRecursively());
-    }
-    Q_ASSERT(dir.cdUp()); // go up from the screenshots dir
-    Q_ASSERT(dir.mkdir(m_dir_screenshots));
+    Q_ASSERT(util::createDir(m_dir_screenshots));
 
     m_timer->start();
     m_elapsed.start();
