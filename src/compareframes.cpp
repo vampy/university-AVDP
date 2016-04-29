@@ -1,6 +1,6 @@
 #include "compareframes.hpp"
 
-CompareFrames::CompareFrames(QObject* parent) : QObject(parent), m_queue_process(new QQueue<QImage>) {}
+CompareFrames::CompareFrames(QObject* parent) : QObject(parent), m_queue_process(new QLinkedList<QImage>) {}
 
 void CompareFrames::setDebug(bool debug)
 {
@@ -20,9 +20,9 @@ void CompareFrames::doWork()
 
     // maybe this is better?
     // https://stackoverflow.com/questions/8682223/synchronizing-objects-in-different-threads-in-qt
-    m_mutex_process_queue.lock();
-    bool is_empty = m_queue_process->empty();
-    m_mutex_process_queue.unlock();
+    m_mutex_queue_process.lock();
+    bool is_empty = m_queue_process->isEmpty();
+    m_mutex_queue_process.unlock();
     if (is_empty)
         return;
 
@@ -32,9 +32,9 @@ void CompareFrames::doWork()
     // nothing to compare current frame with, first image
     if (m_current_frame.isNull())
     {
-        m_mutex_process_queue.lock();
-        m_current_frame = m_queue_process->dequeue();
-        m_mutex_process_queue.unlock();
+        m_mutex_queue_process.lock();
+        m_current_frame = m_queue_process->takeFirst();
+        m_mutex_queue_process.unlock();
 
         if (m_debug)
         {
@@ -50,14 +50,14 @@ void CompareFrames::doWork()
                 {
                     QImage current_frame = m_current_frame.copy(x, y, constants::BLOCK_WIDTH, constants::BLOCK_WIDTH);
                     Imageblock* current_block = new Imageblock(m_current_frame_id, QPoint(x, y), current_frame);
-                    m_mutex_blocks_queue.lock();
-                    m_queue_blocks.enqueue(current_block);
-                    m_mutex_blocks_queue.unlock();
+                    m_mutex_vector_blocks.lock();
+                    m_vector_blocks.append(current_block);
+                    m_mutex_vector_blocks.unlock();
                 }
             }
 
-            emit sendFrame(m_queue_blocks);
-            m_queue_blocks.clear();
+            emit sendFrame(m_vector_blocks);
+            m_vector_blocks.clear();
         }
         emit onCompare(m_current_frame);
 
@@ -65,9 +65,9 @@ void CompareFrames::doWork()
     }
 
     // get raw next frame
-    m_mutex_process_queue.lock();
-    auto next_frame = m_queue_process->dequeue();
-    m_mutex_process_queue.unlock();
+    m_mutex_queue_process.lock();
+    auto next_frame = m_queue_process->takeFirst();
+    m_mutex_queue_process.unlock();
     for (int x = 0; x < next_frame.width(); x += constants::BLOCK_WIDTH)
     {
         for (int y = 0; y < next_frame.height(); y += constants::BLOCK_WIDTH)
@@ -101,9 +101,9 @@ void CompareFrames::doWork()
                 // copy the blocks that are not equal from next frame to the current frame
                 if (constants::IS_NETWORKING)
                 {
-                    m_mutex_blocks_queue.lock();
-                    m_queue_blocks.enqueue(next_block);
-                    m_mutex_blocks_queue.unlock();
+                    m_mutex_vector_blocks.lock();
+                    m_vector_blocks.append(next_block);
+                    m_mutex_vector_blocks.unlock();
                 }
                 else
                 {
@@ -124,8 +124,8 @@ void CompareFrames::doWork()
     //    qDebug() << "Sent frame nr" << m_current_frame_id;
     if (constants::IS_NETWORKING)
     {
-        emit sendFrame(m_queue_blocks);
-        m_queue_blocks.clear();
+        emit sendFrame(m_vector_blocks);
+        m_vector_blocks.clear();
     }
 
     if (m_current_frame_id % default_fps == 0)
@@ -140,8 +140,8 @@ void CompareFrames::doWork()
 
 void CompareFrames::compareFrame(const QImage& image)
 {
-    m_mutex_process_queue.lock();
-    m_queue_process->enqueue(image);
-    m_mutex_process_queue.unlock();
+    m_mutex_queue_process.lock();
+    m_queue_process->append(image);
+    m_mutex_queue_process.unlock();
     doWork();
 }

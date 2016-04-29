@@ -2,10 +2,11 @@
 #define COMPAREFRAMES_H
 
 #include <QDebug>
+#include <QLinkedList>
 #include <QMutex>
 #include <QPainter>
-#include <QQueue>
 #include <QTime>
+#include <QVector>
 #include "imageblock.hpp"
 
 class QObject;
@@ -20,17 +21,17 @@ public:
 signals:
     // compare image finished
     void onCompare(const QImage&);
-    void sendFrame(const QQueue<Imageblock*>);
+    void sendFrame(const QVector<Imageblock*>);
 
 public slots:
     void compareFrame(const QImage&);
     void setDebug(bool);
 
 private:
-    QQueue<QImage>* m_queue_process;    // used for processing in doWork
-    QQueue<Imageblock*> m_queue_blocks; // used for storing different image blocks.
-    QMutex m_mutex_process_queue;
-    QMutex m_mutex_blocks_queue;
+    QLinkedList<QImage>* m_queue_process; // used for processing in doWork
+    QVector<Imageblock*> m_vector_blocks; // used for storing all the image blocks different from the previous frame
+    QMutex m_mutex_queue_process;
+    QMutex m_mutex_vector_blocks;
 
     QImage m_current_frame;          // latest frame in the process queue
     QImage m_original_current_frame; // used internally to compare with the next frame

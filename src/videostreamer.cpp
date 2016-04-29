@@ -60,17 +60,26 @@ void VideoStreamer::setFps(quint8 fps) { m_fps = fps; }
 void VideoStreamer::initConnection()
 {
     m_tcp_socket->disconnectFromHost();
-    m_tcp_socket->waitForDisconnected();
+    if (m_is_connected)
+        m_tcp_socket->waitForDisconnected();
 
-    m_is_connected = true;
     m_tcp_socket->connectToHost(m_hostname, m_port);
-    if (!m_tcp_socket->waitForConnected())
+    if (m_tcp_socket->waitForConnected())
+    {
+        m_is_connected = true;
+    }
+    else
     {
         socketError(m_tcp_socket->error());
     }
 
+    // Could not connect to server
     if (!m_is_connected)
+    {
+        emit connected(false);
         return;
+    }
+
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
@@ -85,17 +94,21 @@ void VideoStreamer::initConnection()
 
     m_tcp_socket->write(block);
     m_tcp_socket->waitForBytesWritten();
+
     qInfo() << "Connected to server";
-    emit connected();
+    emit connected(true);
 }
 
-void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
+void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks)
 {
-    // Fake consume
+    // Fake consume, maybe for testing or server died
     if (!m_is_connected)
     {
-        while (!queue_blocks.empty())
-            delete queue_blocks.dequeue();
+        for (auto el : vector_blocks)
+        {
+            delete el;
+        }
+        vector_blocks.clear();
 
         return;
     }
@@ -106,14 +119,14 @@ void VideoStreamer::onSendFrame(QQueue<Imageblock*> queue_blocks)
 
     // reserve size
     out << (quint32)0;
-    out << queue_blocks.size();
+    out << vector_blocks.size();
 
-    while (!queue_blocks.empty())
+    for (auto el : vector_blocks)
     {
-        Imageblock* imageblock = queue_blocks.dequeue();
-        out << imageblock->getPosition() << imageblock->getImage();
-        delete imageblock;
+        out << el->getPosition() << el->getImage();
+        delete el;
     }
+    vector_blocks.clear();
 
     // set size of the data block
     out.device()->seek(0);

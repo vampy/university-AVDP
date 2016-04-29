@@ -4,9 +4,10 @@
 #include "cli.hpp"
 #include "constants.hpp"
 #include "gui.hpp"
-
 #include "streamingserver.hpp"
 
+// See http://www.embeddeduse.com/2013/06/29/copied-or-not-copied-arguments-signals-slots/
+// How slots and signals copy data
 int main(int argc, char* argv[])
 {
     // Warmup app
@@ -14,7 +15,8 @@ int main(int argc, char* argv[])
     QApplication::setApplicationDisplayName(constants::APP_NAME);
     QApplication::setApplicationName(constants::APP_NAME);
     QApplication::setApplicationVersion(constants::APP_VERSION);
-    qRegisterMetaType<QQueue<Imageblock*>>("QQueue<Imageblock*>");
+    qRegisterMetaType<QVector<Imageblock*>>("QVector<Imageblock*>");
+
     // Parse command line
     QCommandLineParser parser;
     parser.setApplicationDescription(constants::APP_DESCRIPTION);

@@ -24,11 +24,12 @@ public:
     void setFps(quint8 fps);
 
 signals:
-    void connected();
+    void connected(bool);
 
 public slots:
     void initConnection();
-    void onSendFrame(QQueue<Imageblock*>);
+    void onSendFrame(QVector<Imageblock*>);
+
 private slots:
     void sessionOpened();
     void socketError(QAbstractSocket::SocketError);

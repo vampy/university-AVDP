@@ -107,6 +107,7 @@ void GUI::onFrameReady() { updateFrameLabel(); }
 
 void GUI::updateFrameLabel()
 {
+    // TODO, maybe with signals/slots, this is blocking the record thread.
     auto image = m_recorder->getCurrentFrame();
     if (!image.isNull())
     {

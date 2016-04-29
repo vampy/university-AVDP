@@ -1,7 +1,7 @@
 #ifndef RECORDER_HPP
 #define RECORDER_HPP
 
-#include <QQueue>
+#include <QLinkedList>
 #include <QThread>
 #include "compareframes.hpp"
 #include "imageblock.hpp"
@@ -10,7 +10,6 @@
 
 class QObject;
 class QTime;
-class QDebug;
 
 class Recorder : public QObject
 {
@@ -47,7 +46,7 @@ public slots:
     void setDebug(bool);
 
 private slots:
-    void connected();
+    void connected(bool);
     void onScreenshot(const QImage&);
     void onTimerTimeout();
     void onCompare(const QImage&);
@@ -59,7 +58,8 @@ private:
     // Sets the fps, max_thorrtle and rthe timer interval
     void setTimer();
 
-    QQueue<QImage>* m_queue_display; // used for displaying
+    // Add to queue at the end, and take from the front
+    QLinkedList<QImage>* m_queue_display; // used for displaying
     QMutex m_mutex_display_queue;
 
     Screenshot* m_screenshot        = nullptr;
