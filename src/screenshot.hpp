@@ -30,6 +30,11 @@ public:
     void statsDisplay();
     void statsReset();
 
+    qint16 getScreenWidth() const { return m_screen_width; }
+    qint16 getScreenHeight() const { return m_screen_height; }
+    qint16 getNewScreenWidth() const { return m_new_screen_width; }
+    qint16 getNewScreenHeight() const { return m_new_screen_height; }
+
 public slots:
     // Take a screenshot
     void take(int);

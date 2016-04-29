@@ -14,9 +14,7 @@ Recorder::Recorder(QObject* parent,
       m_thread_screenshot(new QThread(this)),
       m_thread_compare(new QThread(this)),
       m_timer(new QTimer(this)),
-      m_fps(fps),
-      m_screen_width(screen_width),
-      m_screen_height(screen_height)
+      m_fps(fps)
 {
     if (constants::IS_NETWORKING)
     {
@@ -29,6 +27,8 @@ Recorder::Recorder(QObject* parent,
     }
 
     m_screenshot->setScreen(screen_id, screen_x, screen_y, screen_width, screen_height);
+    m_screen_width  = m_screenshot->getNewScreenWidth();
+    m_screen_height = m_screenshot->getNewScreenHeight();
 
     setTimer();
     m_timer->setSingleShot(false);

@@ -36,8 +36,8 @@ private slots:
 private:
     QTcpSocket* m_tcp_socket;
     quint8 m_fps;
-    qint16 m_screen_width;
-    qint16 m_screen_height;
+    qint16 m_screen_width  = -1;
+    qint16 m_screen_height = -1;
 
     QString m_hostname;
     quint16 m_port;

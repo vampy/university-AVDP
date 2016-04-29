@@ -124,8 +124,16 @@ void StreamingServer::readyRead()
         qInfo() << "Received height =" << m_screen_height;
         m_previous_frame = new QImage((int)m_screen_width, (int)m_screen_height, QImage::Format_RGB32);
         m_previous_frame->fill(Qt::red);
-        m_streaming_started = true;
-        m_block_size        = 0;
+
+        if (m_screen_width <= 0 || m_screen_height <= 0 || !m_fps)
+        {
+            qCritical() << "You tripping? How can you record something of width/height <= 0 or m_fps = 0";
+        }
+        else
+        {
+            m_streaming_started = true;
+        }
+        m_block_size = 0;
     }
     else // stream images
     {

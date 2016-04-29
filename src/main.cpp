@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     auto screen_h  = util::toInt32(parser.value(OPTION_SCREEN_H));
 
     GUI* gui;
-    CLI* cli;
+    // CLI* cli;
     if (parser.isSet(OPTION_GUI))
     {
         // gui mode
@@ -67,10 +67,10 @@ int main(int argc, char* argv[])
     {
         // cli mode
         qInfo() << "Console mode";
-        cli = new CLI(&app);
+        // cli = new CLI(&app);
 
         // quit app when finished signal  received
-        QObject::connect(cli, &CLI::finished, &app, &QApplication::quit);
+        // QObject::connect(cli, &CLI::finished, &app, &QApplication::quit);
 
         // launch cli
         // QTimer::singleShot(0, cli, &CLI::run);
