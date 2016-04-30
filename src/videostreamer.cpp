@@ -99,7 +99,7 @@ void VideoStreamer::initConnection()
     emit connected(true);
 }
 
-void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks)
+void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks, quint32 frame_id)
 {
     // Fake consume, maybe for testing or server died
     if (!m_is_connected)
@@ -118,8 +118,13 @@ void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks)
     out.setVersion(QDataStream::Qt_5_4);
 
     // reserve size
-    out << (quint32)0;
-    out << vector_blocks.size();
+    out << (quint32)0
+
+        // send frame id
+        << (quint32)frame_id
+
+        // encode the total length of all blocks
+        << (quint32)vector_blocks.size();
 
     for (auto el : vector_blocks)
     {
@@ -134,6 +139,11 @@ void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks)
 
     m_tcp_socket->write(block);
     m_tcp_socket->waitForBytesWritten();
+
+    if (constants::DEBUG_NETWORK)
+    {
+        qInfo() << QString("Sent frame %1 with bytes = %2").arg(frame_id).arg(block.size());
+    }
 }
 
 void VideoStreamer::sessionOpened() {}

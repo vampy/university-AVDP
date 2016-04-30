@@ -30,7 +30,10 @@ private:
 
     bool m_streaming_started = false;
     QTcpServer* m_tcp_server = nullptr;
-    QTcpSocket* m_tcp_socket;
+
+    // TODO support multiple clients
+    QTcpSocket* m_tcp_socket     = nullptr;
+    QDataStream* m_in_datastream = nullptr;
 
     quint8 m_fps;
     qint16 m_screen_width;

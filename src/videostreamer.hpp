@@ -28,7 +28,7 @@ signals:
 
 public slots:
     void initConnection();
-    void onSendFrame(QVector<Imageblock*>);
+    void onSendFrame(const QVector<Imageblock*>, quint32);
 
 private slots:
     void sessionOpened();

@@ -26,6 +26,7 @@ const quint16 DEFAULT_PORT         = 12345;
 const qint16 DEFAULT_SCREEN_WIDTH  = 0;
 const qint16 DEFAULT_SCREEN_HEIGHT = 0;
 const bool IS_NETWORKING           = true;
+const bool DEBUG_NETWORK           = true;
 
 // This should affect performance a lot
 const quint8 DEFAULT_IMAGE_DIFF_SKIP     = 2;

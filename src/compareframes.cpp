@@ -56,10 +56,11 @@ void CompareFrames::doWork()
                 }
             }
 
-            emit sendFrame(m_vector_blocks);
+            emit sendFrame(m_vector_blocks, m_current_frame_id);
             m_vector_blocks.clear();
         }
         emit onCompare(m_current_frame);
+        m_current_frame_id++;
 
         return;
     }
@@ -118,16 +119,15 @@ void CompareFrames::doWork()
             }
         }
     }
-    m_current_frame_id++;
 
     emit onCompare(m_current_frame);
-    //    qDebug() << "Sent frame nr" << m_current_frame_id;
     if (constants::IS_NETWORKING)
     {
-        emit sendFrame(m_vector_blocks);
+        emit sendFrame(m_vector_blocks, m_current_frame_id);
         m_vector_blocks.clear();
     }
 
+    m_current_frame_id++;
     if (m_current_frame_id % default_fps == 0)
     {
         qInfo() << "We have " << debug_counter << "/"

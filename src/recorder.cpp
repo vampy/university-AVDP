@@ -79,7 +79,8 @@ Recorder::~Recorder()
     m_thread_screenshot->quit();
     m_thread_compare->quit();
     if (constants::IS_NETWORKING)
-        m_thread_video_streamer->wait();
+        m_thread_video_streamer->quit();
+
     m_thread_screenshot->wait();
     m_thread_compare->wait();
     if (constants::IS_NETWORKING)
@@ -126,8 +127,8 @@ void Recorder::onScreenshot(const QImage& image)
 
     if (m_count_screenshots % default_fps == 0)
     {
-        qInfo() << "Recorder: take screenshot = " << elapsed_take_screenshot
-                << ", difference = " << elapsed_on_screenshot;
+        qInfo() << "Recorder: take screenshot =" << elapsed_take_screenshot
+                << ", difference =" << elapsed_on_screenshot;
     }
 
     // TODO the opposite of this until the original fps?
