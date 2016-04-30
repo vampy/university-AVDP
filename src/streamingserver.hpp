@@ -7,6 +7,7 @@
 
 #include "util.hpp"
 
+// See https://stackoverflow.com/questions/20546750/qtcpsocket-reading-and-writing
 class StreamingServer : public QObject
 {
     Q_OBJECT

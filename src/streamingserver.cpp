@@ -161,20 +161,21 @@ void StreamingServer::readyRead()
 
         *m_in_datastream >> frame_id >> no_of_blocks;
         QPoint position;
-        QImage image;
+        QImage block;
 
         // TODO save to own format file.
         QString dir = QString("%1/%2.jpg").arg(m_dir_save);
         for (quint32 i = 0; i < no_of_blocks; i++)
         {
-            *m_in_datastream >> position >> image;
+            // TODO use the more efficient methods from util namespace
+            *m_in_datastream >> position >> block;
             int x = position.x();
             int y = position.y();
-            for (int i = 0; i < image.width(); i++)
+            for (int i = 0; i < block.width(); i++)
             {
-                for (int j = 0; j < image.height(); j++)
+                for (int j = 0; j < block.height(); j++)
                 {
-                    m_previous_frame->setPixel(i + x, j + y, image.pixel(i, j));
+                    m_previous_frame->setPixel(i + x, j + y, block.pixel(i, j));
                 }
             }
         }
@@ -204,4 +205,5 @@ void StreamingServer::disconnected()
     m_tcp_socket        = nullptr;
     m_in_datastream     = nullptr;
     m_streaming_started = false;
+    m_current_frame_id  = 0;
 }

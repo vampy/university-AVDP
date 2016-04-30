@@ -51,3 +51,7 @@ To change the screen specify `-s <screen_number>`.
 The default screen size will be the whole screen and position will `0, 0` on that screen.
 
 For more options specify run with `--help`.
+
+# TODO
+- MJPEG streaming service https://stackoverflow.com/questions/33064955/how-to-create-a-http-mjpeg-streaming-server-with-qtcp-server-sockets
+- multiple clients and buffering https://stackoverflow.com/questions/20546750/qtcpsocket-reading-and-writing

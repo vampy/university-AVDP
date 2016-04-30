@@ -21,7 +21,7 @@ const quint8 DEFAULT_FPS2 = 25;
 
 // Aka localhost
 const char* const DEFAULT_HOSTNAME_CLIENT = "127.0.0.1";
-const quint16 DEFAULT_PORT         = 12345;
+const quint16 DEFAULT_PORT                = 12345;
 
 // use the whole screen, DEFAULT_SCREEN_SIZE
 const qint16 DEFAULT_SCREEN_WIDTH  = 0;
