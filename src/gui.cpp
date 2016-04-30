@@ -20,7 +20,7 @@ GUI::GUI(qreal fps, qint8 screen_id, qint16 screen_x, qint16 screen_y, qint16 sc
 
     m_hide_window_checkbox = new QCheckBox("Hide This Window", optionsGroupBox);
     m_hostname_line_edit   = new QLineEdit();
-    m_hostname_line_edit->setText(constants::DEFAULT_HOSTNAME);
+    m_hostname_line_edit->setText(constants::DEFAULT_HOSTNAME_CLIENT);
     m_port_line_edit = new QLineEdit();
     m_port_line_edit->setText(QString::number(constants::DEFAULT_PORT));
     m_port_line_edit->setValidator(new QIntValidator(1, 65535, this));

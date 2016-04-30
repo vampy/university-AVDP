@@ -71,7 +71,7 @@ void StreamingServer::sessionOpened()
     }
 
     m_tcp_server = new QTcpServer(this);
-    if (!m_tcp_server->listen(QHostAddress(constants::DEFAULT_HOSTNAME), constants::DEFAULT_PORT))
+    if (!m_tcp_server->listen(QHostAddress::Any, constants::DEFAULT_PORT))
     {
         qInfo() << "Streaming Server. " << QString("Unable to start the server: %1.").arg(m_tcp_server->errorString());
         return;
