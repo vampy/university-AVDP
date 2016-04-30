@@ -21,7 +21,7 @@ public:
 signals:
     // compare image finished
     void onCompare(const QImage&);
-    void sendFrame(const QVector<Imageblock*>, quint32);
+    void sendFrame(const QVector<Imageblock*>&, const quint32&);
 
 public slots:
     void compareFrame(const QImage&);

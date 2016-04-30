@@ -99,7 +99,7 @@ void VideoStreamer::initConnection()
     emit connected(true);
 }
 
-void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks, quint32 frame_id)
+void VideoStreamer::onSendFrame(const QVector<Imageblock*>& vector_blocks, const quint32& frame_id)
 {
     // Fake consume, maybe for testing or server died
     if (!m_is_connected)
@@ -108,7 +108,6 @@ void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks, quint32 fram
         {
             delete el;
         }
-        vector_blocks.clear();
 
         return;
     }
@@ -131,7 +130,6 @@ void VideoStreamer::onSendFrame(QVector<Imageblock*> vector_blocks, quint32 fram
         out << el->getPosition() << el->getImage();
         delete el;
     }
-    vector_blocks.clear();
 
     // set size of the data block
     out.device()->seek(0);

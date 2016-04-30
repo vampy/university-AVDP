@@ -8,7 +8,7 @@ void CompareFrames::setDebug(bool debug)
     m_debug = debug;
 
     // prevent corruption
-    if (m_original_current_frame.isNull() && debug)
+    if (m_debug && m_original_current_frame.isNull())
         m_original_current_frame = m_current_frame.copy();
 }
 
@@ -69,9 +69,11 @@ void CompareFrames::doWork()
     m_mutex_queue_process.lock();
     auto next_frame = m_queue_process->takeFirst();
     m_mutex_queue_process.unlock();
-    for (int x = 0; x < next_frame.width(); x += constants::BLOCK_WIDTH)
+    auto width  = next_frame.width();
+    auto height = next_frame.height();
+    for (int x = 0; x < width; x += constants::BLOCK_WIDTH)
     {
-        for (int y = 0; y < next_frame.height(); y += constants::BLOCK_WIDTH)
+        for (int y = 0; y < height; y += constants::BLOCK_WIDTH)
         {
             QImage current_frame;
             if (m_debug)
