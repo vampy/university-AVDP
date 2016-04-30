@@ -38,3 +38,5 @@ build/
 *.qmlproject.user
 *.qmlproject.user.*
 screenshots/
+screenshots_network/
+*.log
