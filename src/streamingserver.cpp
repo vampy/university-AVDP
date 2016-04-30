@@ -178,7 +178,8 @@ void StreamingServer::readyRead()
                 }
             }
         }
-        bool saved = m_previous_frame->save(dir.arg(m_current_frame_id, 5, 10, QChar('0')));
+
+        bool saved = m_previous_frame->save(dir.arg(m_current_frame_id, 6, 10, QChar('0')));
         if (!saved)
             qInfo() << "Can't save frame" << m_current_frame_id;
 
