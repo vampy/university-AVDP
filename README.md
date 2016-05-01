@@ -32,9 +32,8 @@ Simply run the executable to run the server.
 Once a client connects it will save the images inside the directory `screenshots_network`.
 
 ### Convert images
-Change into the `screenshots_network` directory then run:
 ```
-ffmpeg -i "%06d.jpg" -c:v libx264 -r 25 -crf 25 -start_number 0 -pix_fmt yuv420p out.mp4
+ffmpeg -i "screenshots_network/%06d.jpg" -c:v libx264 -r 25 -crf 25 -start_number 0 -pix_fmt yuv420p out.mp4
 ```
 
 The `out.mp4` file is your final video recorded on the client.

@@ -195,7 +195,7 @@ void Recorder::initConnection(QString hostname, quint16 port)
 void Recorder::setTimer()
 {
     m_max_throttle           = 1000 / m_fps;
-    m_max_throttle_threshold = 10; // Scientifically choosed! Formula is too long to proove here.
+    m_max_throttle_threshold = 15; // Scientifically choosed! Formula is too long to proove here.
     m_timer->setInterval(m_max_throttle);
 }
 
