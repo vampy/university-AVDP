@@ -32,8 +32,8 @@ bool createDir(QString dirname, bool remove_if_exists)
     return true;
 }
 
-//// See https://code.woboq.org/qt5/qtbase/src/gui/image/qimage.cpp.html#_ZN6QImage8setPixelEiij
-//// Set pixel without detach
+// See https://code.woboq.org/qt5/qtbase/src/gui/image/qimage.cpp.html#_ZN6QImage8setPixelEiij
+// Set pixel without detach
 void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int start_y)
 {
     // No detach for you bits() ;)
@@ -41,52 +41,48 @@ void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int st
     auto bytes_line = dst_image.bytesPerLine();
     auto block_bits = const_cast<uchar*>(block.constBits());
 
-    if (dst_image.bytesPerLine() != block.bytesPerLine())
+    if (bytes_line != block.bytesPerLine())
     {
-        qWarning() << "util::copyBlock: dst_image.bytesPerLine() == block.bytesPerLine()";
+        qWarning() << "util::copyBlock: dst_image.bytesPerLine() != block.bytesPerLine()";
         return;
     }
 
-    //    auto dst_pos = dst_bits + start_x;
-    //    auto src_pos = block_bits + start_x;
-    //    auto column = constants::BLOCK_WIDTH * sizeof(QRgb) * sizeof(QRgb);
-    // lines are the same
-    for (int i = 0; i < constants::BLOCK_WIDTH; i++)
-    {
-        //        auto line = (i + start_y) * bytes_line;
-        auto dst_line = reinterpret_cast<QRgb*>(dst_bits + (i + start_y) * bytes_line);
-        auto src_line = reinterpret_cast<QRgb*>(block_bits + (i + start_y) * bytes_line);
+    // start_x and start_y are relative to a QRgb (4 bytes) Image,
+    // convert so that they are relative to uchar image (1 byte)
+    // NOTE: start_y does not need to be converted
+    start_x *= sizeof(QRgb);
 
-        for (int j = 0; j < constants::BLOCK_WIDTH; j++)
-        {
-            //            auto pos = start_x + j + (i + start_y) * bytes_line;
-            //            Q_ASSERT(pos < dst_image.byteCount());
-            dst_line[start_x + j] = src_line[start_x + j];
-            //            dst_bits[pos] = block_bits[pos];
-        }
-        // copy line by line, TODO use memcpy
-        //        memcpy(dst_pos + line, src_pos + line, column + 1);
+    auto dst_pos = dst_bits + start_x;
+    auto src_pos = block_bits + start_x;
+
+    // iterate over lines, lines are the same
+    for (auto i = 0; i < constants::BLOCK_WIDTH; i++)
+    {
+        auto line_pos = (i + start_y) * bytes_line;
+
+        // copy line by line
+        memcpy(dst_pos + line_pos, src_pos + line_pos, sizeof(QRgb) * constants::BLOCK_WIDTH);
     }
 }
 
-void copyBlockColor(const QImage& dst_image, QRgb color, int start_x, int start_y)
+void copyBlockColor(const QImage& dst_image, QRgb set_color, int start_x, int start_y)
 {
     // use QRgb
     auto dst_bits   = reinterpret_cast<QRgb*>(const_cast<uchar*>(dst_image.constBits()));
     auto bytes_line = dst_image.bytesPerLine() / sizeof(QRgb);
 
-    for (int i = 0; i < constants::BLOCK_WIDTH; i++)
+    // start from column x
+    auto dst_start = dst_bits + start_x;
+
+    // iterate over lines
+    for (auto i = 0; i < constants::BLOCK_WIDTH; i++)
     {
         // line y = (i + start_y) * bytes_line
         // column x on line y = start_x
-        // std::fill_n(dst_bits + (i + start_y) * bytes_line + start_x, constants::BLOCK_WIDTH, color);
+        std::fill_n(dst_start + (i + start_y) * bytes_line, constants::BLOCK_WIDTH, set_color);
 
-        // memset works with bytes, FIXME why black?
-        // memset(dst_bits + (i + start_y) * bytes_line + start_x, color, sizeof(QRgb) * constants::BLOCK_WIDTH);
-        for (int j = 0; j < constants::BLOCK_WIDTH; j++)
-        {
-            dst_bits[(i + start_y) * bytes_line + start_x + j] = color;
-        }
+        // DOES NOT WORK because it uses conversion to unsigned char, sigh
+        // memset(dst_start + (i + start_y) * bytes_line, set_color, sizeof(QRgb) * constants::BLOCK_WIDTH);
     }
 }
 }
