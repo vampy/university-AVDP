@@ -30,8 +30,9 @@ const bool IS_NETWORKING           = true;
 const bool DEBUG_NETWORK           = true;
 
 // This should affect performance a lot
-const quint8 DEFAULT_IMAGE_DIFF_SKIP     = 2;
-const qreal DEFAULT_IMAGE_DIFF_THRESHOLD = 5.0;
+const quint8 DEFAULT_IMAGE_DIFF_SKIP_LINE   = 1;
+const quint8 DEFAULT_IMAGE_DIFF_SKIP_COLUMN = 2;
+const qreal DEFAULT_IMAGE_DIFF_THRESHOLD    = 5.0;
 }
 
 #endif // CONSTANTS_HPP
