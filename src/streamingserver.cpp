@@ -166,23 +166,12 @@ void StreamingServer::readyRead()
 
         // TODO save to own format file.
         QString dir = QString("%1/%2.jpg").arg(m_dir_save);
-//        QTime start; start.start();
         for (quint32 i = 0; i < no_of_blocks; i++)
         {
-            // TODO use the more efficient methods from util namespace
             *m_in_datastream >> position >> block;
 
-            int x = position.x();
-            int y = position.y();
-            for (int i = 0; i < block.width(); i++)
-            {
-                for (int j = 0; j < block.height(); j++)
-                {
-                    m_previous_frame->setPixel(i + x, j + y, block.pixel(i, j));
-                }
-            }
+            util::copyBlock(*m_previous_frame, block, position.x(), position.y());
         }
-//        qInfo() << start.elapsed() << "Copy images\n\n";
 
         bool saved = m_previous_frame->save(dir.arg(m_current_frame_id, 6, 10, QChar('0')));
         if (!saved)
