@@ -153,6 +153,7 @@ void StreamingServer::readyRead()
             qInfo() << "Started Streaming";
             m_streaming_started = true;
         }
+        qInfo() << "Blank image, bytes line = " << m_previous_frame->bytesPerLine();
         m_block_size = 0;
     }
     else // stream images
@@ -165,10 +166,12 @@ void StreamingServer::readyRead()
 
         // TODO save to own format file.
         QString dir = QString("%1/%2.jpg").arg(m_dir_save);
+//        QTime start; start.start();
         for (quint32 i = 0; i < no_of_blocks; i++)
         {
             // TODO use the more efficient methods from util namespace
             *m_in_datastream >> position >> block;
+
             int x = position.x();
             int y = position.y();
             for (int i = 0; i < block.width(); i++)
@@ -179,6 +182,7 @@ void StreamingServer::readyRead()
                 }
             }
         }
+//        qInfo() << start.elapsed() << "Copy images\n\n";
 
         bool saved = m_previous_frame->save(dir.arg(m_current_frame_id, 6, 10, QChar('0')));
         if (!saved)

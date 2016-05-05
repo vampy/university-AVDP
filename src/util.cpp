@@ -33,38 +33,40 @@ bool createDir(QString dirname, bool remove_if_exists)
 }
 
 // See https://code.woboq.org/qt5/qtbase/src/gui/image/qimage.cpp.html#_ZN6QImage8setPixelEiij
-// Set pixel without detach
-void copyBlock(const QImage& dst_image, const QImage& block, int start_x, int start_y)
+// Copy the block located at position `block_start_x, block_start_y` from `src_image` to `dst_image` at the same position.
+void copyBlockFromImage(const QImage& dst_image, const QImage& src_image, int block_start_x, int block_start_y)
 {
     // No detach for you bits() ;)
     auto dst_bits   = const_cast<uchar*>(dst_image.constBits());
     auto bytes_line = dst_image.bytesPerLine();
-    auto block_bits = const_cast<uchar*>(block.constBits());
+    auto src_bits   = const_cast<uchar*>(src_image.constBits());
 
-    if (bytes_line != block.bytesPerLine())
+    // Assume that we copy from one image to another with the same size
+    if (bytes_line != src_image.bytesPerLine())
     {
-        qWarning() << "util::copyBlock: dst_image.bytesPerLine() != block.bytesPerLine()";
+        qWarning() << "util::copyBlockFromImage: " << bytes_line << "!=" << src_image.bytesPerLine();
         return;
     }
 
-    // start_x and start_y are relative to a QRgb (4 bytes) Image,
+    // block_start_x and block_start_y are relative to a QRgb (4 bytes) image,
     // convert so that they are relative to uchar image (1 byte)
     // NOTE: start_y does not need to be converted
-    start_x *= sizeof(QRgb);
+    block_start_x *= sizeof(QRgb);
 
-    auto dst_pos = dst_bits + start_x;
-    auto src_pos = block_bits + start_x;
+    auto dst_pos = dst_bits + block_start_x;
+    auto src_pos = src_bits + block_start_x;
 
-    // iterate over lines, lines are the same
+    // iterate over lines
     for (auto i = 0; i < constants::BLOCK_WIDTH; i++)
     {
-        auto line_pos = (i + start_y) * bytes_line;
+        auto line_pos = (i + block_start_y) * bytes_line;
 
         // copy line by line
         memcpy(dst_pos + line_pos, src_pos + line_pos, sizeof(QRgb) * constants::BLOCK_WIDTH);
     }
 }
 
+// Set a block with color `set_color` at position `start_x, start_y` in `dst_image`
 void copyBlockColor(const QImage& dst_image, QRgb set_color, int start_x, int start_y)
 {
     // use QRgb

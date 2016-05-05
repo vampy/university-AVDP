@@ -113,10 +113,10 @@ void CompareFrames::doWork()
                     delete next_block;
                 }
 
-                util::copyBlock(m_current_frame, next_frame, x, y);
+                util::copyBlockFromImage(m_current_frame, next_frame, x, y);
                 if (m_debug)
                 {
-                    util::copyBlock(m_original_current_frame, next_frame, x, y);
+                    util::copyBlockFromImage(m_original_current_frame, next_frame, x, y);
                 }
             }
         }
